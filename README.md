@@ -48,8 +48,8 @@ and then the script repeats the process asking you again what your next
 guess and clues are, to further reduce this set of possibilities.
 
 The sources of the starting five-letter word lists are the following:
-[English (12972 words)](https://github.com/coolbutuseless/wordle/blob/main/R/words.R)
-[Spanish (10835 words)](https://www.listasdepalabras.es/palabras5letras.htm)
+- [English (12972 words)](https://github.com/coolbutuseless/wordle/blob/main/R/words.R)
+- [Spanish (10835 words)](https://www.listasdepalabras.es/palabras5letras.htm)
 
 If you always want to see the list of remaining words, use the -n option 
 with a large enough value, e.g.:
