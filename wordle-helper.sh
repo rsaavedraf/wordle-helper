@@ -25,11 +25,6 @@ WLFILE=""
 WORDSET=""
 BATCHMODE=false
 
-# To-Do's:
-# create git repo locally
-# then push to github
-# share link in twitter
-
 echo "======================================"
 echo "|  wordle-helper.sh                  |"
 echo "|  By Raul Saavedra F., 2022-Sep-26  |"
