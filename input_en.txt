@@ -1,0 +1,8 @@
+# NYT Wordle challenge attempt Sep/26/2022:
+aside
+-YG--
+slick
+Y-G-G
+# From starting with almost 13K words, only 3 words are left after
+# the above two guesses: brisk, frisk, and whisk.
+# The Wordle solution this day was brisk
