@@ -2,15 +2,15 @@
 # wordle_helper.sh
 # By Raul Saavedra F., Bonn-Germany, 2022-09-23
 #
-# This program progressively filters out all words
+# This script progressively filters out all words
 # that are no longer valid for a Wordle challenge,
-# given your guesses so far, and the clues (green,
-# yellow, or black) for each letter you've received
-# in each guess.
+# given your guesses and clues so far (green,
+# yellow, or black) that you've received for
+# each guess.
 #
-# This script is not really intended to be optimal,
-# just exercises the usage of some grep filtering,
-# regular expressions, and bash programming.
+# Not really intended to be optimal, just exercises
+# the usage of some grep filtering, regular expressions,
+# and bash programming.
 #
 
 BAR="================================================"
@@ -87,8 +87,7 @@ fi
 # and making all words lowercase
 WORDSET=`cat $WLFILE | grep -v "#" | grep "^.....$" | tr '[:upper:]' '[:lower:]'`
 
-# Main loop to iteratively get the guess and clues,
-# then filter the remaining valid words accordingly
+# Main loop
 WORD=""
 GUESS=""
 CLUES=""
@@ -121,7 +120,7 @@ while true; do
         exit 0
     fi
 
-    # Validate that the word has 5 characters
+    # Validate that word has 5 characters
     if (( ${#WORD} != 5 )); then
         echo "ERROR: Input '$WORD' is not five characters long."
         if $BATCHMODE; then
@@ -131,7 +130,7 @@ while true; do
     fi
     INVALID=false
     if ((GET_GUESS)); then
-        # Validate letters in guess word
+        # Validate letters in the guess word
         for (( i=0; i<5; i++ )); do
             LETTER="${WORD:$i:1}"
             if [[ $ABC != *"$LETTER"* ]]; then
@@ -149,12 +148,12 @@ while true; do
         fi
         # WORD has the current GUESS, and it's valid
         GUESS=$WORD
-        # Ask for the associated clues before continuing further down
+        # Ask now for the associated clues
         GET_GUESS=0
         continue;
     fi
 
-    # If we are here, WORD has the CLUES for the last GUESS
+    # If we are here, WORD has now the CLUES for the last GUESS
     CLUES=$WORD
 
     # Validate the CLUES, while building associated filtering patterns
@@ -203,7 +202,7 @@ while true; do
     fi
 
     # At this point the Guess and Clues are finally valid
-    # Proceed with filtering down the list of words
+    # Proceed filtering down the list of words
     ATTEMPT=$(( ATTEMPT + 1 ))
     echo -e "\n\tAttempt: $ATTEMPT"
     FOUND=`echo -e $WORDSET | grep "$GUESS"`
@@ -306,5 +305,5 @@ while true; do
         echo "Bye for now."
         exit 0
     fi
-    GET_GUESS=1 # Repeat asking about the next guess
+    GET_GUESS=1 # Ask for the next guess
 done
