@@ -41,7 +41,7 @@ corresponding clues would be:
 
     -Y--G
 
-The script will then process this information and then tell you the results,
+The script will then process this information and tell you the results,
 which in this case already narrow down all possibilities to only 22 valid
 remaining words (from almost 13000 !) The list of these 22 words is shown,
 and then the script repeats the process asking you again what your next
