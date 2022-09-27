@@ -2,7 +2,7 @@
 # wordle_helper.sh
 # By Raul Saavedra F., Bonn-Germany, 2022-09-23
 #
-# This programs progressively filters out all words
+# This program progressively filters out all words
 # that are no longer valid for a Wordle challenge,
 # given your guesses so far, and the clues (green,
 # yellow, or black) for each letter you've received
