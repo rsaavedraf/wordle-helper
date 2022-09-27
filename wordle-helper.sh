@@ -1,5 +1,5 @@
 #!/bin/bash
-# wordle_helper.sh
+# wordle-helper.sh
 # By Raul Saavedra F., Bonn-Germany, 2022-09-23
 #
 # This script progressively filters out all words
@@ -26,8 +26,14 @@ SHOWMAXN=100
 INPUTS=""
 WLFILE=""
 WORDSET=""
+NWORDS=0
 BATCHMODE=false
 ABC="abcdefghijklmnñopqrstuvwxyz"
+
+function dowordcount () {
+    NWORDS=`echo $WORDSET | wc -w`
+    echo -e "\tWords remaining: $NWORDS"
+}
 
 # Process parameters/options, if any
 for OPTION in "$@"; do
@@ -63,7 +69,6 @@ for OPTION in "$@"; do
              echo "Using $SHOWMAXN as maximum number of words to display."
              ;;
         -w*) WLF="${OPTION:2}"
-             # Todo: verify that file exists
              if [[ -f $WLF ]]; then
                  WLFILE=$WLF
                  echo "Using '$WLFILE' as word list."
@@ -87,15 +92,14 @@ fi
 # and making all words lowercase
 WORDSET=`cat $WLFILE | grep -v "#" | grep "^.....$" | tr '[:upper:]' '[:lower:]'`
 
-# Main loop
 WORD=""
 GUESS=""
 CLUES=""
 LOOP=0
 ATTEMPT=0
-GET_GUESS=1
-while true; do
+GET_GUESS=true
 
+while true; do
     # Get input WORD
     if $BATCHMODE; then
         # get next word from the inputs array
@@ -103,7 +107,7 @@ while true; do
         LOOP=$(( LOOP + 1 ))
     else
         # Ask user for next input
-        if ((GET_GUESS)); then
+        if $GET_GUESS; then
             echo -e "\n===== Please enter your 5-letter wordle guess, or Enter to leave:"
         else
             # Ask for the corresponding clues
@@ -129,7 +133,7 @@ while true; do
         continue
     fi
     INVALID=false
-    if ((GET_GUESS)); then
+    if $GET_GUESS; then
         # Validate letters in the guess word
         for (( i=0; i<5; i++ )); do
             LETTER="${WORD:$i:1}"
@@ -149,7 +153,7 @@ while true; do
         # WORD has the current GUESS, and it's valid
         GUESS=$WORD
         # Ask now for the associated clues
-        GET_GUESS=0
+        GET_GUESS=false
         continue;
     fi
 
@@ -226,28 +230,24 @@ while true; do
     echo -e "\tLetters in BLACK   : $LTRS_BLACK"
     echo -e "\tTo Match (GREEN)   : $PATTERN_TO_MATCH"
     echo -e "\tTo Discard (YELLOW): $PATTERNS_TO_DISCARD"
-    NWORDS=`echo $WORDSET | wc -w`
-    echo -e "\tWords remaining: $NWORDS"
+    dowordcount
     # Filter the remaining set of words given the new guess+clues
     if [[ "$LTRS_BLACK" != "" ]]; then
         echo -e "\tDiscarding words with any of '$LTRS_BLACK' in any position."
         WORDSET=`echo -e "$WORDSET" | grep -v "[$LTRS_BLACK]"`
-        NWORDS=`echo $WORDSET | wc -w`
-        echo -e "\tWords remaining: $NWORDS"
+        dowordcount
     fi
     if [[ "$PATTERN_TO_MATCH" != "$ANYTHING" ]]; then
         echo -e "\tKeeping only words that match the pattern for greens: $PATTERN_TO_MATCH"
         WORDSET=`echo -e "$WORDSET" | grep "$PATTERN_TO_MATCH"`
-        NWORDS=`echo $WORDSET | wc -w`
-        echo -e "\tWords remaining: $NWORDS"
+        dowordcount
     fi
     if [[ "$PATTERNS_TO_DISCARD" != "" ]]; then
         echo -e "\tDiscarding words matching the pattern(s) for yellows: $PATTERNS_TO_DISCARD"
         for PATTERN in $PATTERNS_TO_DISCARD; do
             echo -e "\tDiscarding pattern '$PATTERN'"
             WORDSET=`echo -e "$WORDSET" | grep -v "$PATTERN"`
-            NWORDS=`echo $WORDSET | wc -w`
-            echo -e "\tWords remaining: $NWORDS"
+            dowordcount
         done
     fi
     LEN_YNR=${#LTRS_YNOREP}
@@ -255,8 +255,7 @@ while true; do
         LETTER="${LTRS_YNOREP:$i:1}"
         echo -e "\tKeeping only words with '$LETTER' somewhere"
         WORDSET=`echo -e "$WORDSET" | grep "$LETTER"`
-        NWORDS=`echo $WORDSET | wc -w`
-        echo -e "\tWords remaining: $NWORDS"
+        dowordcount
     done
     # If there are yellow letters repeated, or yellow letters which also
     # appear in green, then count how many times this letter appears, in order
@@ -284,8 +283,7 @@ while true; do
                 echo -e "\tRepetition detected for $LETTER, appearing $COUNT times."
                 echo -e "\tKeeping only words with that repetition (PATTERN $REP_PATTERN)"
                 WORDSET=`echo -e "$WORDSET" | grep "$REP_PATTERN"`
-                NWORDS=`echo $WORDSET | wc -w`
-                echo -e "\tWords remaining: $NWORDS"
+                dowordcount
             fi
         fi
     done
@@ -305,5 +303,5 @@ while true; do
         echo "Bye for now."
         exit 0
     fi
-    GET_GUESS=1 # Ask for the next guess
+    GET_GUESS=true # Ask for the next guess
 done
