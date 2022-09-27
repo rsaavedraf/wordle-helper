@@ -13,30 +13,29 @@
 # regular expressions, and bash programming.
 #
 
+BAR="================================================"
+echo $BAR
+echo "|     wordle-helper.sh                         |"
+echo "|     By Raul Saavedra F., 2022-Sep-26         |"
+echo $BAR
 ANYTHING="....."
 BLACK="-"
 GREEN="g"
 YELLOW="y"
-
 SHOWMAXN=100
-
 INPUTS=""
 WLFILE=""
 WORDSET=""
 BATCHMODE=false
+ABC="abcdefghijklmnñopqrstuvwxyz"
 
-echo "======================================"
-echo "|  wordle-helper.sh                  |"
-echo "|  By Raul Saavedra F., 2022-Sep-26  |"
-echo "======================================"
-
-# Process parameters, if any
+# Process parameters/options, if any
 for OPTION in "$@"; do
     case $OPTION in
         -h)  cat wordle-helper-help.txt
              exit 0
              ;;
-        -e)  echo "Using the default wordlist for Spanish."
+        -s)  echo "Using the default wordlist for SPANISH."
              WLFILE="words_len5_es.txt"
              ;;
         -b*) INFILE="${OPTION:2}"
@@ -54,7 +53,7 @@ for OPTION in "$@"; do
                  BATCHMODE=false
              fi
              ;;
-        -s*) N="${OPTION:2}"
+        -n*) N="${OPTION:2}"
              NUMREGEX="^[0-9]+$"
              if ! [[ $N =~ $NUMREGEX ]]; then
                 echo "Invalid max parameter: $N is not >= zero."
@@ -106,44 +105,59 @@ while true; do
     else
         # Ask user for next input
         if ((GET_GUESS)); then
-            echo "Please enter your 5-letter wordle guess: "
+            echo -e "\n===== Please enter your 5-letter wordle guess, or Enter to leave:"
         else
             # Ask for the corresponding clues
-            echo "Please enter the resulting clues (e.g. -YG--): "
+            echo "===== Please enter the resulting clues (e.g. -YG--), or Enter to leave:"
         fi
         read WORD
     fi
     # Trim whitespace from WORD, and make it lowercase
     WORD=`echo "$WORD" | xargs | tr '[:upper:]' '[:lower:]'`
 
-    # If WORD is empty, exit
+    # If WORD is empty, exit normally
     if [[ "$WORD" == "" ]]; then
         echo "No more inputs, see you next time."
         exit 0
     fi
+
     # Validate that the word has 5 characters
     if (( ${#WORD} != 5 )); then
-        echo "ERROR: Input '$WORD' is the not five characters long."
+        echo "ERROR: Input '$WORD' is not five characters long."
         if $BATCHMODE; then
             exit -4
-        else
+        fi
+        continue
+    fi
+    INVALID=false
+    if ((GET_GUESS)); then
+        # Validate letters in guess word
+        for (( i=0; i<5; i++ )); do
+            LETTER="${WORD:$i:1}"
+            if [[ $ABC != *"$LETTER"* ]]; then
+                # Not a valid letter
+                INVALID=true
+                break
+            fi
+        done
+        if $INVALID; then
+            echo "ERROR: invalid letter '$LETTER' in '$WORD'."
+            if $BATCHMODE; then
+                exit -5
+            fi
             continue
         fi
-    fi
-
-    if ((GET_GUESS)); then
-        # WORD has the current GUESS
+        # WORD has the current GUESS, and it's valid
         GUESS=$WORD
         # Ask for the associated clues before continuing further down
         GET_GUESS=0
         continue;
     fi
 
-    # If we are here, WORD now has the CLUES for the last GUESS
+    # If we are here, WORD has the CLUES for the last GUESS
     CLUES=$WORD
 
-    # Processing this GUESS and its corresponding CLUES
-    ATTEMPT=$(( ATTEMPT + 1 ))
+    # Validate the CLUES, while building associated filtering patterns
     LTRS_BLACK=""  # Letters in Black i.e. not in the Wordle solution
     LTRS_GREEN=""  # Collect here letters in Green
     LTRS_YELLOW="" # Collect here letters in Yellow
@@ -151,15 +165,6 @@ while true; do
     PATTERN_TO_MATCH=$ANYTHING     # Pattern to match (from Green letters)
     PATTERNS_TO_DISCARD=""         # Patterns to discard (from Yellow letters)
     SPACER=""
-    echo "Attempt: $ATTEMPT"
-    echo "Guess  : $GUESS"
-    echo "Clues  : $CLUES"
-    FOUND=`echo -e $WORDSET | grep "$GUESS"`
-    if [[ "$FOUND" == "" ]]; then
-        echo "Warning: word '$GUESS' not found among remaining words."
-        echo "(It might contain letter/position guesses already discarded.)"
-    fi
-    # Go through clues to build up the needed filtering patterns
     for (( i=0; i<5; i++)); do
         LETTER="${GUESS:$i:1}"
         CLUE="${CLUES:$i:1}"
@@ -178,13 +183,34 @@ while true; do
             if [[ $LTRS_YNOREP != *"$LETTER"* ]]; then
                 LTRS_YNOREP="$LTRS_YNOREP$LETTER"
             fi
-        else
+        elif [[ "$CLUE" == "$BLACK" ]]; then
             # Update our set of black letters with no repetitions
             if [[ $LTRS_BLACK != *"$LETTER"* ]]; then
                 LTRS_BLACK="$LTRS_BLACK$LETTER"
             fi
+        else
+            # Invalid character in clues
+            echo "ERROR: character '$CLUE' is an invalid clue."
+            INVALID=true
+            break
         fi
     done
+    if $INVALID; then
+        if $BATCHMODE; then
+            exit -6
+        fi
+        continue
+    fi
+
+    # At this point the Guess and Clues are finally valid
+    # Proceed with filtering down the list of words
+    ATTEMPT=$(( ATTEMPT + 1 ))
+    echo -e "\n\tAttempt: $ATTEMPT"
+    FOUND=`echo -e $WORDSET | grep "$GUESS"`
+    if [[ "$FOUND" == "" ]]; then
+        echo "Warning: word '$GUESS' was not found among remaining words."
+        echo "(It might contain letter/position guesses already discarded.)"
+    fi
     # Remove from LTRS_BLACK any letter that appears also in yellow or green
     NEWLTRS_BLACK=""
     LTRS_YG="$LTRS_YELLOW$LTRS_GREEN"
@@ -192,13 +218,12 @@ while true; do
     for (( i=0; i<$LEN_B; i++)); do
         LETTER="${LTRS_BLACK:$i:1}"
         if [[ $LTRS_YG != *"$LETTER"* ]]; then
-            NEWLTRS_BLACK="$NEWLTRS_BLACK$LETTER"   # Not in yellow or green, so keep as black
+            # Not in yellows or greens, so keep as black
+            NEWLTRS_BLACK="$NEWLTRS_BLACK$LETTER"
         fi
     done
     LTRS_BLACK=$NEWLTRS_BLACK
     # Details about current guess and clues
-    echo -e "\tLetters in GREEN   : $LTRS_GREEN"
-    echo -e "\tLetters in YELLOW  : $LTRS_YELLOW"
     echo -e "\tLetters in BLACK   : $LTRS_BLACK"
     echo -e "\tTo Match (GREEN)   : $PATTERN_TO_MATCH"
     echo -e "\tTo Discard (YELLOW): $PATTERNS_TO_DISCARD"
@@ -206,7 +231,7 @@ while true; do
     echo -e "\tWords remaining: $NWORDS"
     # Filter the remaining set of words given the new guess+clues
     if [[ "$LTRS_BLACK" != "" ]]; then
-        echo -e "\tDiscarding all words with any of the following letters in any position: $LTRS_BLACK"
+        echo -e "\tDiscarding words with any of '$LTRS_BLACK' in any position."
         WORDSET=`echo -e "$WORDSET" | grep -v "[$LTRS_BLACK]"`
         NWORDS=`echo $WORDSET | wc -w`
         echo -e "\tWords remaining: $NWORDS"
@@ -218,7 +243,7 @@ while true; do
         echo -e "\tWords remaining: $NWORDS"
     fi
     if [[ "$PATTERNS_TO_DISCARD" != "" ]]; then
-        echo -e "\tDiscarding all words matching the pattern(s) for yellows: $PATTERNS_TO_DISCARD"
+        echo -e "\tDiscarding words matching the pattern(s) for yellows: $PATTERNS_TO_DISCARD"
         for PATTERN in $PATTERNS_TO_DISCARD; do
             echo -e "\tDiscarding pattern '$PATTERN'"
             WORDSET=`echo -e "$WORDSET" | grep -v "$PATTERN"`
@@ -270,8 +295,8 @@ while true; do
         echo $WORDSET
     fi
     if (( NWORDS == 1 )); then
-        echo "Congratulations, a single word was matched!!! :)"
-        echo "See you next time."
+        echo -e "$BAR\nCongratulations, a single word was reached!!! :)"
+        echo -e "See you next time.\n$BAR"
         exit 0
     fi
     if (( NWORDS == 0 )); then
