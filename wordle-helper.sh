@@ -28,7 +28,7 @@ WLFILE=""
 WORDSET=""
 NWORDS=0
 BATCHMODE=false
-ABC=" a b c d e f g h i j k l m n o p q r s t u v w x y z"
+ABC="abcdefghijklmnopqrstuvwxyz"
 
 function do_Word_Count () {
     NWORDS=`echo $WORDSET | wc -w`
@@ -36,7 +36,7 @@ function do_Word_Count () {
 }
 
 # This function completes the ABC adding any additional letters
-# that might appear in the word list to use (e.g. ñ for Spanish)
+# (e.g. ñ for Spanish) that might appear in the word list to use
 function do_Complete_ABC() {
     for W in $WORDSET; do
         for (( i=0; i<5; i++ )); do
@@ -45,17 +45,16 @@ function do_Complete_ABC() {
                 continue
             fi
             # This letter is not in the ABC, append it
-            ABC="$ABC $LETTER"
+            ABC="$ABC$LETTER"
         done
     done
-    # Sort ABC and remove all spaces from it
-    ABC=`echo "$ABC" | tr " " "\n"`
-    ABC=`echo -e "$ABC" | sort | tr -d '[:space:]'`
+    # sort letters in ABC
+    ABC=`echo "$ABC" | grep -o . | sort | tr -d '[:space:]'`
 }
 
 # This function returns the 1st invalid letter found in a word
 # If no invalid letter is found, returns ""
-# Parameter $1 is the word to chek
+# Parameter $1 is the word to check
 # Parameter $2 is the set of valid letters
 function get_Invalid() {
     local i
@@ -132,7 +131,6 @@ WORDSET=`cat $WLFILE | grep -v "#" | grep "^.....$" | tr '[:upper:]' '[:lower:]'
 echo "Completing ABC from word list..."
 do_Complete_ABC
 echo "ABC has a total of ${#ABC} letters: $ABC"
-
 
 WORD=""
 GUESS=""
