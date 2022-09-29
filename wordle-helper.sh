@@ -8,9 +8,8 @@
 # yellow, or black) that you've received for
 # each guess.
 #
-# Not really intended to be optimal, just exercises
-# the usage of some grep filtering, regular expressions,
-# and bash programming.
+# This exercises the usage of some grep filtering,
+# regular expressions, and bash programming.
 #
 
 BAR="================================================"
@@ -22,17 +21,54 @@ ANYTHING="....."
 BLACK="-"
 GREEN="g"
 YELLOW="y"
+VALIDCLUES="$BLACK$GREEN$YELLOW"
 SHOWMAXN=100
 INPUTS=""
 WLFILE=""
 WORDSET=""
 NWORDS=0
 BATCHMODE=false
-ABC="abcdefghijklmnñopqrstuvwxyz"
+ABC=" a b c d e f g h i j k l m n o p q r s t u v w x y z"
 
-function dowordcount () {
+function do_Word_Count () {
     NWORDS=`echo $WORDSET | wc -w`
     echo -e "\tWords remaining: $NWORDS"
+}
+
+# This function completes the ABC adding any additional letters
+# that might appear in the word list to use (e.g. ñ for Spanish)
+function do_Complete_ABC() {
+    for W in $WORDSET; do
+        for (( i=0; i<5; i++ )); do
+            LETTER="${W:$i:1}"
+            if [[ $ABC == *"$LETTER"* ]]; then
+                continue
+            fi
+            # This letter is not in the ABC, append it
+            ABC="$ABC $LETTER"
+        done
+    done
+    # Sort ABC and remove all spaces from it
+    ABC=`echo "$ABC" | tr " " "\n"`
+    ABC=`echo -e "$ABC" | sort | tr -d '[:space:]'`
+}
+
+# This function returns the 1st invalid letter found in a word
+# If no invalid letter is found, returns ""
+# Parameter $1 is the word to chek
+# Parameter $2 is the set of valid letters
+function get_Invalid() {
+    local i
+    local W=$1
+    for (( i=0; i<5; i++ )); do
+        local LETTER="${W:$i:1}"
+        if [[ "$2" != *"$LETTER"* ]]; then
+            # Not a valid letter
+            echo $LETTER
+            exit
+        fi
+    done
+    echo ""
 }
 
 # Process parameters/options, if any
@@ -92,6 +128,12 @@ fi
 # and making all words lowercase
 WORDSET=`cat $WLFILE | grep -v "#" | grep "^.....$" | tr '[:upper:]' '[:lower:]'`
 
+# Build ABC from the WORDSET
+echo "Completing ABC from word list..."
+do_Complete_ABC
+echo "ABC has a total of ${#ABC} letters: $ABC"
+
+
 WORD=""
 GUESS=""
 CLUES=""
@@ -116,7 +158,7 @@ while true; do
         read WORD
     fi
     # Trim whitespace from WORD, and make it lowercase
-    WORD=`echo "$WORD" | xargs | tr '[:upper:]' '[:lower:]'`
+    WORD=`echo "$WORD" | tr -d '[:space:]' | tr '[:upper:]' '[:lower:]'`
 
     # If WORD is empty, exit normally
     if [[ "$WORD" == "" ]]; then
@@ -132,19 +174,11 @@ while true; do
         fi
         continue
     fi
-    INVALID=false
     if $GET_GUESS; then
         # Validate letters in the guess word
-        for (( i=0; i<5; i++ )); do
-            LETTER="${WORD:$i:1}"
-            if [[ $ABC != *"$LETTER"* ]]; then
-                # Not a valid letter
-                INVALID=true
-                break
-            fi
-        done
-        if $INVALID; then
-            echo "ERROR: invalid letter '$LETTER' in '$WORD'."
+        INVALID=`get_Invalid "$WORD" "$ABC"`
+        if [ "$INVALID" != "" ]; then
+            echo "ERROR: invalid letter '$INVALID' in '$WORD'."
             if $BATCHMODE; then
                 exit -5
             fi
@@ -157,10 +191,19 @@ while true; do
         continue;
     fi
 
-    # If we are here, WORD has now the CLUES for the last GUESS
+    # Validate clues
+    INVALID=`get_Invalid "$WORD" "$VALIDCLUES"`
+    if [ "$INVALID" != "" ]; then
+        echo "ERROR: invalid character '$INVALID' in '$WORD'."
+        if $BATCHMODE; then
+            exit -6
+        fi
+        continue
+    fi
+    # If we are here, WORD has now the CLUES for GUESS
     CLUES=$WORD
 
-    # Validate the CLUES, while building associated filtering patterns
+    # Building filtering patterns given the clues for this guess
     LTRS_BLACK=""  # Letters in Black i.e. not in the Wordle solution
     LTRS_GREEN=""  # Collect here letters in Green
     LTRS_YELLOW="" # Collect here letters in Yellow
@@ -186,24 +229,13 @@ while true; do
             if [[ $LTRS_YNOREP != *"$LETTER"* ]]; then
                 LTRS_YNOREP="$LTRS_YNOREP$LETTER"
             fi
-        elif [[ "$CLUE" == "$BLACK" ]]; then
+        else
             # Update our set of black letters with no repetitions
             if [[ $LTRS_BLACK != *"$LETTER"* ]]; then
                 LTRS_BLACK="$LTRS_BLACK$LETTER"
             fi
-        else
-            # Invalid character in clues
-            echo "ERROR: character '$CLUE' is an invalid clue."
-            INVALID=true
-            break
         fi
     done
-    if $INVALID; then
-        if $BATCHMODE; then
-            exit -6
-        fi
-        continue
-    fi
 
     # At this point the Guess and Clues are finally valid
     # Proceed filtering down the list of words
@@ -230,24 +262,24 @@ while true; do
     echo -e "\tLetters in BLACK   : $LTRS_BLACK"
     echo -e "\tTo Match (GREEN)   : $PATTERN_TO_MATCH"
     echo -e "\tTo Discard (YELLOW): $PATTERNS_TO_DISCARD"
-    dowordcount
+    do_Word_Count
     # Filter the remaining set of words given the new guess+clues
     if [[ "$LTRS_BLACK" != "" ]]; then
         echo -e "\tDiscarding words with any of '$LTRS_BLACK' in any position."
         WORDSET=`echo -e "$WORDSET" | grep -v "[$LTRS_BLACK]"`
-        dowordcount
+        do_Word_Count
     fi
     if [[ "$PATTERN_TO_MATCH" != "$ANYTHING" ]]; then
         echo -e "\tKeeping only words that match the pattern for greens: $PATTERN_TO_MATCH"
         WORDSET=`echo -e "$WORDSET" | grep "$PATTERN_TO_MATCH"`
-        dowordcount
+        do_Word_Count
     fi
     if [[ "$PATTERNS_TO_DISCARD" != "" ]]; then
         echo -e "\tDiscarding words matching the pattern(s) for yellows: $PATTERNS_TO_DISCARD"
         for PATTERN in $PATTERNS_TO_DISCARD; do
             echo -e "\tDiscarding pattern '$PATTERN'"
             WORDSET=`echo -e "$WORDSET" | grep -v "$PATTERN"`
-            dowordcount
+            do_Word_Count
         done
     fi
     LEN_YNR=${#LTRS_YNOREP}
@@ -255,7 +287,7 @@ while true; do
         LETTER="${LTRS_YNOREP:$i:1}"
         echo -e "\tKeeping only words with '$LETTER' somewhere"
         WORDSET=`echo -e "$WORDSET" | grep "$LETTER"`
-        dowordcount
+        do_Word_Count
     done
     # If there are yellow letters repeated, or yellow letters which also
     # appear in green, then count how many times this letter appears, in order
@@ -283,7 +315,7 @@ while true; do
                 echo -e "\tRepetition detected for $LETTER, appearing $COUNT times."
                 echo -e "\tKeeping only words with that repetition (PATTERN $REP_PATTERN)"
                 WORDSET=`echo -e "$WORDSET" | grep "$REP_PATTERN"`
-                dowordcount
+                do_Word_Count
             fi
         fi
     done
