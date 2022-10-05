@@ -10,14 +10,14 @@ Valid options are:
 
     -h         : display this help file.
 
+    -s         : use the Spanish word list instead of the English one
+                 (for Wordle challenges in Spanish.)
+
     -nN        : show list of remaining words only if they are no more
                  than N (default value for N is 100).
 
     -bFILE     : batch mode: use FILE as input. See an example input file
                  near the end of this help.
-
-    -s         : use the Spanish word list instead of the English one
-                 (for Wordle challenges in Spanish.)
 
     -wFILE     : use contents of FILE as the starting Word List
                  (i.e. for Wordle challenges in other languages.)
@@ -54,7 +54,7 @@ The sources of the starting five-letter word lists are the following:
 If you always want to see the list of remaining words, use the -n option 
 with a large enough value, e.g.:
 
-    ./wordle-helper -n13000
+    ./wordle-helper.sh -n13000
 
 If you only want to know how many words are left, but you do not want to
 see the actual words, use the -n option with zero.
