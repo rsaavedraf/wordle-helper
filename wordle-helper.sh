@@ -1,12 +1,12 @@
 #!/bin/bash
 # wordle-helper.sh
-# By Raul Saavedra F., Bonn-Germany, 2022-09-23
+# author: Raul Saavedra F. (raul.saavedra@gmail.com)
+# date  : 2022-09-26
 #
-# This script progressively filters out all words
-# that are no longer valid for a Wordle challenge,
-# given your guesses and clues so far (green,
-# yellow, or black) that you've received for
-# each guess.
+# This script progressively filters out all words that are
+# no longer valid for a Wordle challenge, given your guesses
+# and clues so far (green, yellow, or black) that you've
+# received for each guess.
 #
 # This exercises the usage of some grep filtering,
 # regular expressions, and bash programming.
@@ -32,7 +32,11 @@ ABC="abcdefghijklmnopqrstuvwxyz"
 
 function do_Word_Count () {
     NWORDS=`echo $WORDSET | wc -w`
-    echo -e "\tWords remaining: $NWORDS"
+    if [[ "$1" == "" ]]; then
+        echo -e "\tWords remaining: $NWORDS"
+    else
+        echo "Size of Word Set: $NWORDS"
+    fi
 }
 
 # This function completes the ABC adding any additional letters
@@ -76,7 +80,7 @@ for OPTION in "$@"; do
         -h)  cat wordle-helper-help.txt
              exit 0
              ;;
-        -s)  echo "Using the default wordlist for SPANISH."
+        -s)  echo "Using the default wordlist for SPANISH"
              WLFILE="words_len5_es.txt"
              ;;
         -b*) INFILE="${OPTION:2}"
@@ -97,22 +101,22 @@ for OPTION in "$@"; do
         -n*) N="${OPTION:2}"
              NUMREGEX="^[0-9]+$"
              if ! [[ $N =~ $NUMREGEX ]]; then
-                echo "Invalid max parameter: $N is not >= zero."
+                echo "Invalid max parameter: $N is not >= zero"
              else
                 SHOWMAXN=$N
              fi
-             echo "Using $SHOWMAXN as maximum number of words to display."
+             echo "Using $SHOWMAXN as maximum number of words to display"
              ;;
         -w*) WLF="${OPTION:2}"
              if [[ -f $WLF ]]; then
                  WLFILE=$WLF
                  echo "Using '$WLFILE' as word list."
              else
-                 echo "ERROR: Word list file '$WLF' not found, exiting."
+                 echo "ERROR: Word list file '$WLF' not found, exiting"
                  exit -2
              fi
              ;;
-        *)   echo "ERROR: $OPTION is not an option, use -h for usage details."
+        *)   echo "ERROR: $OPTION is not an option, use -h for usage details"
              exit -3
              ;;
     esac
@@ -125,10 +129,10 @@ fi
 
 # Read word list ignoring comments, keeping only 5 letter words,
 # and making all words lowercase
+echo "Loading word list..."
 WORDSET=`cat $WLFILE | grep -v "#" | grep "^.....$" | tr '[:upper:]' '[:lower:]'`
-
 # Build ABC from the WORDSET
-echo "Completing ABC from word list..."
+do_Word_Count "start"
 do_Complete_ABC
 echo "ABC has a total of ${#ABC} letters: $ABC"
 
@@ -198,7 +202,9 @@ while true; do
         fi
         continue
     fi
-    # If we are here, WORD has now the CLUES for GUESS
+
+    # If we are here, WORD has now the CLUES for GUESS,
+    # and both Guess and Clues have been validated
     CLUES=$WORD
 
     # Building filtering patterns given the clues for this guess
@@ -235,7 +241,6 @@ while true; do
         fi
     done
 
-    # At this point the Guess and Clues are finally valid
     # Proceed filtering down the list of words
     ATTEMPT=$(( ATTEMPT + 1 ))
     echo -e "\n\tAttempt: $ATTEMPT"
