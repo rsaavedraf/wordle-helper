@@ -1,0 +1,10 @@
+# Testing for corner case seen in English Wordle #477,
+# in which some words with double O's were still not being
+# ruled out after the third clue here
+aside
+---g-
+young
+yg---
+moody
+-g-gg
+
