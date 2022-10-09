@@ -3,16 +3,18 @@
 # Created after the english wordle #477 from 2022-10-09,
 # in which the helper I realized was still not ruling out
 # some repeated O's which could be eliminated.
+#
 # After the following sequence of guesses and clues:
 # aside	---g-
 # young	yg---
 # moody	-g-gg
+#
 # The helper showed 14 remaining words including the following five:
 # boody, doody, foody, hoody, and woody.
-# But all of these with two O's could be discarded given the last clue,
-# so the correct number of remaining words should be 9, or in any case
-# (depening on whether the word list changes) no remaining word
-# should have an O in the third position.
+# But all of these five with two O's could have been discarded given
+# the last clue, so the correct number of remaining words should 
+# be 9 (not 14), or in any case, depending on whether the word list
+# changes, a word like "hoody" cannot be among the reamining ones.
 #
 # By Raul Saavedra, 2022-10-09
 
