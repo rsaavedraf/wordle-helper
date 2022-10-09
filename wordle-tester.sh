@@ -11,10 +11,11 @@
 #
 # The helper showed 14 remaining words including the following five:
 # boody, doody, foody, hoody, and woody.
-# But all of these five with two O's could have been discarded given
-# the last clue, so the correct number of remaining words should 
-# be 9 (not 14), or in any case, depending on whether the word list
-# changes, a word like "hoody" cannot be among the reamining ones.
+# But all of these with an O in the third position could have been
+# discarded given the last clue, and the helper was still keeping them.
+# The correct number of remaining words should be 9 (not 14), or in any
+# case, depending on whether the word list changes, a word like "hoody"
+# cannot be among the remaining ones after those three attempts.
 #
 # By Raul Saavedra, 2022-10-09
 
