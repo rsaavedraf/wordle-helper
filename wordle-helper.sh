@@ -35,7 +35,7 @@ function do_Word_Count () {
     if [[ "$1" == "" ]]; then
         echo -e "\tWords remaining: $NWORDS"
     else
-        echo "Size of Word Set: $NWORDS"
+        echo "Size of starting word list: $NWORDS"
     fi
 }
 
@@ -142,6 +142,8 @@ CLUES=""
 LOOP=0
 ATTEMPT=0
 GET_GUESS=true
+LTRS_GNOREP_ALL="" # Letters in Green from all clues, with no repetitions
+LTRS_YNOREP_ALL="" # Letters in Yellow from all clues, with no repetitions
 
 while true; do
     # Get input WORD
@@ -208,35 +210,62 @@ while true; do
     CLUES=$WORD
 
     # Building filtering patterns given the clues for this guess
-    LTRS_BLACK=""  # Letters in Black i.e. not in the Wordle solution
-    LTRS_GREEN=""  # Collect here letters in Green
     LTRS_YELLOW="" # Collect here letters in Yellow
-    LTRS_YNOREP="" # Letters in Yellow, but with no repetitions
+    LTRS_YNOREP=""
+    LTRS_GREEN=""  # Collect here letters in Green
     PATTERN_TO_MATCH=$ANYTHING     # Pattern to match (from Green letters)
     PATTERNS_TO_DISCARD=""         # Patterns to discard (from Yellow letters)
     SPACER=""
+    # Process Yellows and Greens first
     for (( i=0; i<5; i++)); do
         LETTER="${GUESS:$i:1}"
         CLUE="${CLUES:$i:1}"
-        if [[ "$CLUE" == "$GREEN" ]]; then
-            # Add this letter in this position to the pattern to match
-            PATTERN_TO_MATCH="${PATTERN_TO_MATCH:0:i}$LETTER${PATTERN_TO_MATCH:i+1}"
-            # Update our set of green letters
-            LTRS_GREEN="$LTRS_GREEN$LETTER"
-        elif [[ "$CLUE" == "$YELLOW" ]]; then
-            # Add this letter in this position to the patterns to discard using yellows
+        if [[ "$CLUE" == "$YELLOW" ]]; then
+            # Add this letter in this position to the patterns to discard
             PATTERNS_TO_DISCARD="$PATTERNS_TO_DISCARD$SPACER${ANYTHING:0:i}$LETTER${ANYTHING:i+1}"
             SPACER=" "
-            # Update our set of yellow letters allowing repetitions
+            # Update our set of yellow letters from these clues
             LTRS_YELLOW="$LTRS_YELLOW$LETTER"
             # Update our set of yellow letters with no repetitions
             if [[ $LTRS_YNOREP != *"$LETTER"* ]]; then
+                # For this attempt only
                 LTRS_YNOREP="$LTRS_YNOREP$LETTER"
             fi
-        else
-            # Update our set of black letters with no repetitions
-            if [[ $LTRS_BLACK != *"$LETTER"* ]]; then
-                LTRS_BLACK="$LTRS_BLACK$LETTER"
+            if [[ $LTRS_YNOREP_ALL != *"$LETTER"* ]]; then
+                # For all attempts
+                LTRS_YNOREP_ALL="$LTRS_YNOREP_ALL$LETTER"
+            fi
+        elif [[ "$CLUE" == "$GREEN" ]]; then
+            # Add this letter in this position to the pattern to match
+            PATTERN_TO_MATCH="${PATTERN_TO_MATCH:0:i}$LETTER${PATTERN_TO_MATCH:i+1}"
+            # Update our set of green letters from these clues
+            LTRS_GREEN="$LTRS_GREEN$LETTER"
+            # Update our set of green letters from all clues, with no repetitions
+            if [[ $LTRS_GNOREP_ALL != *"$LETTER"* ]]; then
+                LTRS_GNOREP_ALL="$LTRS_GNOREP_ALL$LETTER"
+            fi
+        fi
+    done
+
+    # Process blacks
+    LTRS_BLACK=""  # Collect here Letters in Black
+    LTRS_YG_ALL="$LTRS_YNOREP_ALL$LTRS_GNOREP_ALL"
+    for (( i=0; i<5; i++)); do
+        LETTER="${GUESS:$i:1}"
+        CLUE="${CLUES:$i:1}"
+        if [[ "$CLUE" == "$BLACK" ]]; then
+            if [[ $LTRS_YG_ALL != *"$LETTER"* ]]; then
+                # Clue is black and letter has never appeared as yellow or green
+                # Append to list of letters that for sure are not in the solution,
+                # if not there already
+                if [[ $LTRS_BLACK != *"$LETTER"* ]]; then
+                    LTRS_BLACK="$LTRS_BLACK$LETTER"
+                fi
+            else
+                # Clue was black, but letter has been seen elsewhere as Y or G,
+                # So remove words that match this letter in this position
+                PATTERNS_TO_DISCARD="$PATTERNS_TO_DISCARD$SPACER${ANYTHING:0:i}$LETTER${ANYTHING:i+1}"
+                SPACER=" "
             fi
         fi
     done
@@ -244,27 +273,17 @@ while true; do
     # Proceed filtering down the list of words
     ATTEMPT=$(( ATTEMPT + 1 ))
     echo -e "\n\tAttempt: $ATTEMPT"
+    echo -e "\tGuess  : $GUESS"
+    echo -e "\tClues  : $CLUES"
     FOUND=`echo -e $WORDSET | grep "$GUESS"`
     if [[ "$FOUND" == "" ]]; then
         echo "Warning: word '$GUESS' was not found among remaining words."
         echo "(It might contain letter/position guesses already discarded.)"
     fi
-    # Remove from LTRS_BLACK any letter that appears also in yellow or green
-    NEWLTRS_BLACK=""
-    LTRS_YG="$LTRS_YELLOW$LTRS_GREEN"
-    LEN_B=${#LTRS_BLACK}
-    for (( i=0; i<$LEN_B; i++)); do
-        LETTER="${LTRS_BLACK:$i:1}"
-        if [[ $LTRS_YG != *"$LETTER"* ]]; then
-            # Not in yellows or greens, so keep as black
-            NEWLTRS_BLACK="$NEWLTRS_BLACK$LETTER"
-        fi
-    done
-    LTRS_BLACK=$NEWLTRS_BLACK
     # Details about current guess and clues
-    echo -e "\tLetters in BLACK   : $LTRS_BLACK"
-    echo -e "\tTo Match (GREEN)   : $PATTERN_TO_MATCH"
-    echo -e "\tTo Discard (YELLOW): $PATTERNS_TO_DISCARD"
+    #echo -e "\tLetters in BLACK : $LTRS_BLACK"
+    #echo -e "\tTo Match (GREEN) : $PATTERN_TO_MATCH"
+    #echo -e "\tTo Discard       : $PATTERNS_TO_DISCARD"
     do_Word_Count
     # Filter the remaining set of words given the new guess+clues
     if [[ "$LTRS_BLACK" != "" ]]; then
@@ -278,7 +297,7 @@ while true; do
         do_Word_Count
     fi
     if [[ "$PATTERNS_TO_DISCARD" != "" ]]; then
-        echo -e "\tDiscarding words matching the pattern(s) for yellows: $PATTERNS_TO_DISCARD"
+        #echo -e "\tDiscarding words matching these pattern(s): $PATTERNS_TO_DISCARD"
         for PATTERN in $PATTERNS_TO_DISCARD; do
             echo -e "\tDiscarding pattern '$PATTERN'"
             WORDSET=`echo -e "$WORDSET" | grep -v "$PATTERN"`
@@ -288,13 +307,16 @@ while true; do
     LEN_YNR=${#LTRS_YNOREP}
     for (( i=0; i<$LEN_YNR; i++)); do
         LETTER="${LTRS_YNOREP:$i:1}"
-        echo -e "\tKeeping only words with '$LETTER' somewhere"
-        WORDSET=`echo -e "$WORDSET" | grep "$LETTER"`
-        do_Word_Count
+        if [[ $LTRS_GNOREP_ALL != *"$LETTER"* ]]; then
+            echo -e "\tKeeping only words with '$LETTER' somewhere"
+            WORDSET=`echo -e "$WORDSET" | grep "$LETTER"`
+            do_Word_Count
+        fi
     done
     # If there are yellow letters repeated, or yellow letters which also
     # appear in green, then count how many times this letter appears, in order
     # to keep only words with at least that many occurences of this letter
+    LTRS_YG="$LTRS_YELLOW$LTRS_GREEN"
     LEN_YG=${#LTRS_YG}
     REPEATED="" # Collect here letters that we find repeated in LTRS_YG
     for (( i=0; i<$LEN_YG; i++)); do
@@ -324,6 +346,7 @@ while true; do
     done
     if (( NWORDS <= SHOWMAXN )); then
         # Show the remaining set of possible solutions
+        echo -n "Actual words remaining: "
         echo $WORDSET
     fi
     if (( NWORDS == 1 )); then
