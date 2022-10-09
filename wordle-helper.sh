@@ -211,10 +211,10 @@ while true; do
 
     # Building filtering patterns given the clues for this guess
     LTRS_YELLOW="" # Collect here letters in Yellow
-    LTRS_YNOREP=""
+    LTRS_YNOREP="" # Same, but with no repetitions
     LTRS_GREEN=""  # Collect here letters in Green
     PATTERN_TO_MATCH=$ANYTHING     # Pattern to match (from Green letters)
-    PATTERNS_TO_DISCARD=""         # Patterns to discard (from Yellow letters)
+    PATTERNS_TO_DISCARD=""         # Patterns to discard (from Yellow or Black letters)
     SPACER=""
     # Process Yellows and Greens first
     for (( i=0; i<5; i++)); do
@@ -270,7 +270,7 @@ while true; do
         fi
     done
 
-    # Proceed filtering down the list of words
+    # Details of current guess and corresponding clues
     ATTEMPT=$(( ATTEMPT + 1 ))
     echo -e "\n\tAttempt: $ATTEMPT"
     echo -e "\tGuess  : $GUESS"
@@ -280,12 +280,9 @@ while true; do
         echo "Warning: word '$GUESS' was not found among remaining words."
         echo "(It might contain letter/position guesses already discarded.)"
     fi
-    # Details about current guess and clues
-    #echo -e "\tLetters in BLACK : $LTRS_BLACK"
-    #echo -e "\tTo Match (GREEN) : $PATTERN_TO_MATCH"
-    #echo -e "\tTo Discard       : $PATTERNS_TO_DISCARD"
     do_Word_Count
-    # Filter the remaining set of words given the new guess+clues
+
+    # Proceed filtering down the list of remaining words given the new guess+clues
     if [[ "$LTRS_BLACK" != "" ]]; then
         echo -e "\tDiscarding words with any of '$LTRS_BLACK' in any position."
         WORDSET=`echo -e "$WORDSET" | grep -v "[$LTRS_BLACK]"`
