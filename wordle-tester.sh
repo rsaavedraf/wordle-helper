@@ -28,6 +28,9 @@ function good() {
     echo "Test $1 succeeded"
 }
 
+# Check corner case found after wordle #477: remaining words from
+# input set here cannot contain words like hoody, e.g. with an O in
+# third position
 LASTWORDSET=`./wordle-helper.sh -binput_test_en_01.txt | grep "Actual words" | tail -n 1`
 NWC=`echo $LASTWORDSET | wc -w`
 LSETSIZE=$(( NWC - 3 ))
@@ -37,6 +40,7 @@ if [[ "$LSETSIZE" == "0" || "$HASHOODY" != "" ]]; then
 fi
 good "01"
 
+# Check that it reaches a set of remaining words with oomph in it
 LASTWORDSET=`./wordle-helper.sh -binput_test_en_02.txt | grep "Actual words" | tail -n 1`
 MCOUNT=`echo $LASTWORDSET | grep 'oomph' | wc -l`
 if [[ "$MCOUNT" != "1" ]]; then
@@ -44,6 +48,9 @@ if [[ "$MCOUNT" != "1" ]]; then
 fi
 good "02"
 
+# Check that using this input file which is for spanish, but not using the -s option,
+# so using the default English word list, the actual solution (word 'droga') will
+# not be among the remaining words
 LASTWORDSET=`./wordle-helper.sh -binput_test_es_01.txt | grep "Actual words" | tail -n 1`
 MCOUNT=`echo $LASTWORDSET | grep 'droga' | wc -l`
 if [[ "$MCOUNT" != "0" ]]; then
@@ -51,6 +58,8 @@ if [[ "$MCOUNT" != "0" ]]; then
 fi
 good "03"
 
+# Similar to the previous test but now using the -s option, so the last word set
+# should have only one word: 'droga'
 LASTWORDSET=`./wordle-helper.sh -s -binput_test_es_01.txt | grep "Actual words" | tail -n 1`
 NWC=`echo $LASTWORDSET | wc -w`
 LSETSIZE=$(( NWC - 3 ))
@@ -61,6 +70,3 @@ fi
 good "04"
 
 exit 0
-
-
-
