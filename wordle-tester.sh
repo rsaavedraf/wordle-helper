@@ -1,5 +1,18 @@
 #!/bin/bash
+# wordle-tester.sh
+# author: Raul Saavedra F. (raul.saavedra@gmail.com)
+# date  : 2022-10-09
+#
+# Usage: run simply with no parameters to test the wordle-helper.sh (bash) script:
+#
+#   ./wordle-tester.sh
+#
+# Or run with any parameter to test the python (wordle-helper.py) script:
+#   ./wordle-tester.sh 1
+#
+#
 # Tests that some corner cases for the wordle-helper do work.
+#
 # Created after the english wordle #477 from 2022-10-09,
 # in which the helper I realized was still not ruling out
 # some repeated O's which could be eliminated.
@@ -16,8 +29,7 @@
 # The correct number of remaining words should be 9 (not 14), or in any
 # case, depending on whether the word list changes, a word like "hoody"
 # cannot be among the remaining ones after those three attempts.
-#
-# By Raul Saavedra, 2022-10-09
+
 
 function failed() {
     echo "Test $1 FAILED"
@@ -32,7 +44,7 @@ RESULT=""
 
 RUNWH="./wordle-helper.sh"
 if [[ "$1" != "" ]]; then
-    # to run the test with the python instead of bash script
+    # any parameter makes this tester test the python instead of bash script
     RUNWH="python3 wordle-helper.py"
 fi
 
@@ -80,6 +92,15 @@ if [[ "$MATCHCOUNT" != "1" ]]; then
     failed "04"
 else
     good "04"
+fi
+
+# Check usage of option -w with a given word list and a given test file
+LASTWORDSET=`$RUNWH -wtest_wordlist.txt -binput_test_en_03.txt | grep "Actual words" | tail -n 1`
+MATCHCOUNT=`echo $LASTWORDSET | grep "zzzzz" | wc -l`
+if [[ "$MATCHCOUNT" != "1" ]]; then
+    failed "05"
+else
+    good "05"
 fi
 
 exit $RESULT
