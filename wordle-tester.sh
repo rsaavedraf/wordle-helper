@@ -21,12 +21,14 @@
 
 function failed() {
     echo "Test $1 FAILED"
-    exit 1
+    RESULT="1"
 }
 
 function good() {
     echo "Test $1 succeeded"
 }
+
+RESULT=""
 
 # Check corner case found after wordle #477: remaining words from
 # input set here cannot contain words like hoody, e.g. with an O in
@@ -37,36 +39,43 @@ LSETSIZE=$(( NWC - 3 ))
 HASHOODY=`echo $LASTWORDSET | grep 'hoody'`
 if [[ "$LSETSIZE" == "0" || "$HASHOODY" != "" ]]; then
     failed "01"
+else
+    good "01"
 fi
-good "01"
 
-# Check that it reaches a set of remaining words with oomph in it
-LASTWORDSET=`./wordle-helper.sh -binput_test_en_02.txt | grep "Actual words" | tail -n 1`
-MCOUNT=`echo $LASTWORDSET | grep 'oomph' | wc -l`
+# Check that letter repetitions with at least one in yellow are detected.
+# From the given input file the letter o is detected as repeated
+# appearing at least once in yellow. After this test the word oomph
+# should remain, but not the word vomit.
+LASTWORDSET=`./wordle-helper.sh -binput_test_en_02.txt -n500 | grep "Actual words" | tail -n 1`
+MCOUNT=`echo $LASTWORDSET | grep 'oomph' | grep -v 'vomit' | wc -l`
 if [[ "$MCOUNT" != "1" ]]; then
     failed "02"
+else
+    good "02"
 fi
-good "02"
 
-# Check that using this input file which is for spanish, but not using the -s option,
-# so using the default English word list, the actual solution (word 'droga') will
-# not be among the remaining words
+# Check that using this input file which is for spanish, but not using
+# the -s option (so using the default English word list) the actual
+# solution (word 'droga') will not be among the remaining words
 LASTWORDSET=`./wordle-helper.sh -binput_test_es_01.txt | grep "Actual words" | tail -n 1`
 MCOUNT=`echo $LASTWORDSET | grep 'droga' | wc -l`
 if [[ "$MCOUNT" != "0" ]]; then
     failed "03"
+else
+    good "03"
 fi
-good "03"
 
-# Similar to the previous test but now using the -s option, so the last word set
-# should have only one word: 'droga'
+# Similar to the previous test but now using the -s option, so the
+# set of remaining words should have only one word: 'droga'
 LASTWORDSET=`./wordle-helper.sh -s -binput_test_es_01.txt | grep "Actual words" | tail -n 1`
 NWC=`echo $LASTWORDSET | wc -w`
 LSETSIZE=$(( NWC - 3 ))
 MCOUNT=`echo $LASTWORDSET | grep 'droga' | wc -l`
 if [[ "$LSETSIZE" != "1" || "$MCOUNT" != "1" ]]; then
     failed "04"
+else
+    good "04"
 fi
-good "04"
 
-exit 0
+exit $RESULT
