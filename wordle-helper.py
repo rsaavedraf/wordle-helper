@@ -16,12 +16,24 @@
 
 import sys
 import string
+import re
+from pathlib import Path
 
-BAR='='*48
-wordlist_file=""
-word_set=set()
-abc=set([*string.ascii_lowercase])
-show_max_n=100
+BAR             = '='*48
+abc             = set(string.ascii_lowercase)
+black           = "-"
+green           = "g"
+yellow          = "y"
+valid_clues     = set(black+green+yellow)
+wordlist_file   = ""
+word_set        = set()
+show_max_n      = 100
+ltrs_ynorep_all = set() # Letters in Yellow from all clues, with no repetitions
+ltrs_gnorep_all = set() # Letters in Green from all clues, with no repetitions
+anything        = "....."
+batch_mode      = False
+binputs         = []
+binput_index    = 0
 
 def starting_banner():
     print(BAR)
@@ -32,6 +44,8 @@ def starting_banner():
 def process_options(argv):
     global wordlist_file
     global show_max_n
+    global batch_mode
+    global binputs
     for opt in argv:
         if opt == "-h":
             # Display help
@@ -54,12 +68,31 @@ def process_options(argv):
             print("Using {0} as maximum number of words to display.".format(show_max_n))
             continue
         if opt.startswith("-b"):
-            # to do
-            print("Processing -b")
+            fname = opt[2:]
+            vpath = Path(fname)
+            if vpath.is_file():
+                print("Using contents of '"+fname+"' as input file in batch mode:")
+                with open(fname) as contents:
+                    for line in contents:
+                        line = line.strip()
+                        if len(line) > 0 and not line.startswith("#"):
+                            words = line.split()
+                            binputs.extend(words)
+                print(" ".join(str(x) for x in binputs))
+                batch_mode = True
+            else:
+                print("ERROR: File '"+fname+"' not found, exiting.")
+                sys.exit(-1)
             continue
         if opt.startswith("-w"):
-            # to do
-            print("Processing -w")
+            fname = opt[2:]
+            vpath = Path(fname)
+            if vpath.is_file():
+                wordlist_file = fname
+                print("Using '"+wordlist_file+"' as word list.")
+            else:
+                print("ERROR: Word list file '"+fname+"' not found, exiting")
+                sys.exit(-2)
             continue
         print("ERROR: {0} is not an option, use -h for usage details".format(opt))
         sys.exit(-3)
@@ -68,6 +101,7 @@ def load_wordlist():
     global wordlist_file
     global word_set
     global abc
+    global batch_mode
     word_set.clear()
     print("Loading word list...")
     if wordlist_file == "":
@@ -82,18 +116,191 @@ def load_wordlist():
         for line in wordlist_lines:
             li = line.strip()
             if not li.startswith("#"):
-                if len(li) == 5:
-                    word = li.lower()
-                    word_set.add( word )
-                    # Make sure abc has all letters
-                    for letter in [*word]:
-                        abc.add(letter)
-    print("Size of the word set: {0}".format(len(word_set)))
+                words = li.split()
+                for word in words:
+                    if len(word) == 5:
+                        word = word.lower()
+                        word_set.add( word )
+                        # Make sure abc has all letters
+                        for letter in [*word]:
+                            abc.add(letter)
+    do_word_count("Size of starting word list")
     print("ABC has a total of {0} letters: {1}".format(len(abc), ''.join(sorted(abc))))
 
+def get_word(msg, valid_letters):
+    global batch_mode
+    global binputs
+    global binput_index
+    word = ""
+    invalid = True
+    while invalid:
+        if batch_mode:
+            if binput_index >= len(binputs):
+                break
+            else:
+                word = binputs[binput_index]
+                binput_index = binput_index + 1
+        else:
+            print(msg)
+            word = input()
+        if (word == ""):
+            break
+        word = word.strip()
+        if (len(word) != 5):
+            print("ERROR: Input '"+word+"' is not five characters long.")
+            if batch_mode:
+                sys.exit(-4)
+            continue
+        word = word.lower()
+        letters = [*word]
+        invalid = False
+        for letter in letters:
+            if (letter not in valid_letters):
+                print("ERROR: invalid character '"+letter+"' in '"+word+"'")
+                if batch_mode:
+                    sys.exit(-5)
+                invalid = True
+                break
+    return word
+
+def do_word_count(msg):
+    nwords = len(word_set)
+    print(msg+": "+str(nwords))
+
+def process_attempt(n, word, clues):
+    global BAR
+    global word_set
+    global ltrs_ynorep_all
+    global ltrs_gnorep_all
+    global show_max_n
+    global batch_mode
+    # Process Yellows and Greens first
+    msg_wr="\tWords remaining"
+    ltrs_yellow=""
+    ltrs_green=""
+    ltrs_ynorep=set()
+    patterns_to_discard=set()
+    pattern_to_match=anything
+    lw = [*word]  # list of letters in word
+    lc = [*clues] # list of letters in clues
+    for i in range(5):
+        ltr  = lw[i]
+        clue = lc[i]
+        if (clue == 'y'):       # Process yellow clue
+            ltrs_yellow = ltrs_yellow + ltr
+            ltrs_ynorep.add(ltr)
+            ltrs_ynorep_all.add(ltr)
+            patterns_to_discard.add( anything[0:i] + ltr + anything[i+1:])
+        elif (clue == 'g'):     # Process green clue
+            ltrs_green = ltrs_green + ltr
+            ltrs_gnorep_all.add(ltr)
+            pattern_to_match = pattern_to_match[0:i] + ltr + pattern_to_match[i+1:]
+
+    # Process Blacks
+    ltrs_black=set()
+    ltrs_yg_all=ltrs_ynorep_all.union(ltrs_gnorep_all)
+    for i in range(5):
+        ltr  = lw[i]
+        clue = lc[i]
+        if (clue == "-"):       # Process black clue
+            if ltr not in ltrs_yg_all:
+                # Clue is black and letter has never appeared as yellow or green.
+                # Append to list of letters that for sure are not in the solution
+                ltrs_black.add(ltr)
+            else:
+                # Clue is black, but the letter has been seen elsewhere as yellow
+                # or green. Add to patterns to discard words with letter in pos i
+                patterns_to_discard.add( anything[0:i] + ltr + anything[i+1:])
+
+    # Details of current guess and corresponding clues
+    print("\n\tAttempt: "+str(n))
+    print(  "\tGuess  : "+word)
+    print(  "\tClues  : "+clues)
+    if (word not in word_set):
+        print("Warning: word '"+word+"' was not found among remaining words.")
+        print("(It might contain letter/position guesses already discarded.)")
+    do_word_count(msg_wr)
+
+    # Proceed to filter down list of remaining words given the new guess and clues
+    if len(ltrs_black) > 0:
+        pattern = "[" + "".join(ltrs_black) + "]"
+        print("\tDiscarding words with any of "+pattern+" in any position.")
+        word_set = set(w for w in word_set if not re.match(".*"+pattern+".*", w))
+        do_word_count(msg_wr)
+
+    if pattern_to_match != anything:
+        print("\tKeeping only words that match the pattern for greens: "+pattern_to_match)
+        word_set = set(w for w in word_set if re.match(pattern_to_match, w))
+        do_word_count(msg_wr)
+
+    for pattern in patterns_to_discard:
+        print("\tDiscarding pattern '"+pattern+"'")
+        word_set = set(w for w in word_set if not re.match(pattern, w))
+        do_word_count(msg_wr)
+
+    for ltr in ltrs_ynorep:
+        if ltr not in ltrs_gnorep_all:
+            print("\tKeeping only words with '"+ltr+"' somewhere")
+            word_set = set(w for w in word_set if re.match(".*"+ltr+".*", w))
+            do_word_count(msg_wr)
+
+    # If there is a yellow letter repeated, or a yellow letter which also
+    # appears in green, then count how many times this letter appears, in order
+    # to keep only words with at least that many occurences of this letter
+    ltrs_yg  = ltrs_yellow + ltrs_green
+    len_yg   = len(ltrs_yg)
+    repeated = set()
+    for i in range(len_yg):
+        ltr = ltrs_yg[i]
+        if ltr not in repeated:
+            count = 1
+            rep_pattern = ".*" + ltr
+            for j in range(i+1, len_yg):
+                ltr2 = ltrs_yg[j]
+                if ltr == ltr2:
+                    count = count + 1
+                    rep_pattern = rep_pattern + ".*" + ltr
+            if count > 1:
+                repeated.add(ltr)                # Track the letter as repeated
+                rep_pattern = rep_pattern + ".*" # Finish the needed pattern
+                print("\tRepetition detected for "+ltr+", appearing "+str(count)+" times.")
+                print("\tKeeping only words with that repetition (pattern "+rep_pattern+")")
+                word_set = set(w for w in word_set if re.match(rep_pattern, w))
+                do_word_count(msg_wr)
+
+    nwords = len(word_set)
+    if nwords <= show_max_n:
+        print("Actual words remaining: "+" ".join(sorted(word_set)))
+    if nwords == 1:
+        print(BAR+"\nCongratulations, a single word was reached!!! :)")
+        print("See you next time.\n"+BAR)
+        sys.exit(0)
+    if nwords == 0:
+        print("We ran out of words, no further filtering is possible.")
+        print("The starting word list might need additional entries.")
+        print("Double-check your provided input just in case of typos.")
+        print("Bye for now.")
+        sys.exit(0)
+
+
 def do_helper_loop():
-    print("\nHere comes the helper loop")
-    # to do
+    global abc
+    global valid_clues
+    msg_eoi="No more inputs, see you next time."
+    msg_enter_guess="\n===== Please enter your 5-letter wordle guess, or Enter to leave:"
+    msg_enter_clues="===== Please enter the resulting clues (e.g. -YG--), or Enter to leave:"
+    attempt = 0
+    while True:
+        word = get_word(msg_enter_guess, abc)
+        if (word == ""):
+            print(msg_eoi)
+            break
+        clues = get_word(msg_enter_clues, valid_clues)
+        if (clues == ""):
+            print(msg_eoi)
+            break
+        attempt = attempt + 1
+        process_attempt(attempt, word, clues)
     sys.exit(0)
 
 def do_wordle_helper(argv):

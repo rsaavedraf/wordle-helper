@@ -23,7 +23,7 @@ GREEN="g"
 YELLOW="y"
 VALIDCLUES="$BLACK$GREEN$YELLOW"
 SHOWMAXN=100
-INPUTS=""
+BINPUTS=""
 WLFILE=""
 WORDSET=""
 NWORDS=0
@@ -88,14 +88,13 @@ for OPTION in "$@"; do
                  # Get contents of the file removing comments
                  CONTENTS=`cat $INFILE | grep -v "^#.*"`
                  # Create array of words in CONTENTS
-                 INPUTS=( $CONTENTS )
+                 BINPUTS=( $CONTENTS )
                  echo "Using contents of '$INFILE' as input file in batch mode:"
                  echo $CONTENTS
                  BATCHMODE=true
              else
                  echo "ERROR: File '$INFILE' not found, exiting."
                  exit -1
-                 BATCHMODE=false
              fi
              ;;
         -n*) N="${OPTION:2}"
@@ -130,7 +129,9 @@ fi
 # Read word list ignoring comments, keeping only 5 letter words,
 # and making all words lowercase
 echo "Loading word list..."
-WORDSET=`cat $WLFILE | grep -v "#" | grep "^.....$" | tr '[:upper:]' '[:lower:]'`
+#WORDSET=`cat $WLFILE | grep -v "#" | grep "^.....$" | tr '[:upper:]' '[:lower:]'`
+WORDSET=`cat $WLFILE | grep -v "#" | tr '[:upper:]' '[:lower:]' | tr ' ' '\n'`
+WORDSET=`echo -e "$WORDSET" | grep "^.....$"`
 # Build ABC from the WORDSET
 do_Word_Count "start"
 do_Complete_ABC
@@ -139,7 +140,7 @@ echo "ABC has a total of ${#ABC} letters: $ABC"
 WORD=""
 GUESS=""
 CLUES=""
-LOOP=0
+BINPUTIDX=0
 ATTEMPT=0
 GET_GUESS=true
 LTRS_GNOREP_ALL="" # Letters in Green from all clues, with no repetitions
@@ -149,8 +150,8 @@ while true; do
     # Get input WORD
     if $BATCHMODE; then
         # get next word from the inputs array
-        WORD=${INPUTS[$LOOP]}
-        LOOP=$(( LOOP + 1 ))
+        WORD=${BINPUTS[$BINPUTIDX]}
+        BINPUTIDX=$(( BINPUTIDX + 1 ))
     else
         # Ask user for next input
         if $GET_GUESS; then
@@ -282,9 +283,9 @@ while true; do
     fi
     do_Word_Count
 
-    # Proceed filtering down the list of remaining words given the new guess+clues
+    # Proceed to filter down list of remaining words given the new guess+clues
     if [[ "$LTRS_BLACK" != "" ]]; then
-        echo -e "\tDiscarding words with any of '$LTRS_BLACK' in any position."
+        echo -e "\tDiscarding words with any of [$LTRS_BLACK] in any position."
         WORDSET=`echo -e "$WORDSET" | grep -v "[$LTRS_BLACK]"`
         do_Word_Count
     fi
@@ -293,14 +294,11 @@ while true; do
         WORDSET=`echo -e "$WORDSET" | grep "$PATTERN_TO_MATCH"`
         do_Word_Count
     fi
-    if [[ "$PATTERNS_TO_DISCARD" != "" ]]; then
-        #echo -e "\tDiscarding words matching these pattern(s): $PATTERNS_TO_DISCARD"
-        for PATTERN in $PATTERNS_TO_DISCARD; do
-            echo -e "\tDiscarding pattern '$PATTERN'"
-            WORDSET=`echo -e "$WORDSET" | grep -v "$PATTERN"`
-            do_Word_Count
-        done
-    fi
+    for PATTERN in $PATTERNS_TO_DISCARD; do
+        echo -e "\tDiscarding pattern '$PATTERN'"
+        WORDSET=`echo -e "$WORDSET" | grep -v "$PATTERN"`
+        do_Word_Count
+    done
     LEN_YNR=${#LTRS_YNOREP}
     for (( i=0; i<$LEN_YNR; i++)); do
         LETTER="${LTRS_YNOREP:$i:1}"
@@ -310,8 +308,9 @@ while true; do
             do_Word_Count
         fi
     done
-    # If there are yellow letters repeated, or yellow letters which also
-    # appear in green, then count how many times this letter appears, in order
+
+    # If there is a yellow letter repeated, or a yellow letters which also
+    # appears in green, then count how many times this letter appears, in order
     # to keep only words with at least that many occurences of this letter
     LTRS_YG="$LTRS_YELLOW$LTRS_GREEN"
     LEN_YG=${#LTRS_YG}
@@ -335,12 +334,13 @@ while true; do
                 REPEATED="$REPEATED$LETTER"  # Track the letter as repeated
                 REP_PATTERN="$REP_PATTERN.*" # Finish the needed pattern
                 echo -e "\tRepetition detected for $LETTER, appearing $COUNT times."
-                echo -e "\tKeeping only words with that repetition (PATTERN $REP_PATTERN)"
+                echo -e "\tKeeping only words with that repetition (pattern $REP_PATTERN)"
                 WORDSET=`echo -e "$WORDSET" | grep "$REP_PATTERN"`
                 do_Word_Count
             fi
         fi
     done
+
     if (( NWORDS <= SHOWMAXN )); then
         # Show the remaining set of possible solutions
         echo -n "Actual words remaining: "
