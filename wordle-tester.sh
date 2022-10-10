@@ -30,14 +30,19 @@ function good() {
 
 RESULT=""
 
+RUNWH="./wordle-helper.sh"
+if [[ "$1" != "" ]]; then
+    # to run the test with the python instead of bash script
+    RUNWH="python3 wordle-helper.py"
+fi
+
+
 # Check corner case found after wordle #477: remaining words from
-# input set here cannot contain words like hoody, e.g. with an O in
-# third position
-LASTWORDSET=`./wordle-helper.sh -binput_test_en_01.txt | grep "Actual words" | tail -n 1`
-NWC=`echo $LASTWORDSET | wc -w`
-LSETSIZE=$(( NWC - 3 ))
-HASHOODY=`echo $LASTWORDSET | grep 'hoody'`
-if [[ "$LSETSIZE" == "0" || "$HASHOODY" != "" ]]; then
+# input set here cannot contain words like 'hoody', e.g. with an
+# 'o' in the third position
+LASTWORDSET=`$RUNWH -binput_test_en_01.txt -n500 | grep "Actual words" | tail -n 1`
+MATCHCOUNT=`echo $LASTWORDSET | grep 'howdy' | grep -v 'hoody' | wc -l`
+if [[ "$MATCHCOUNT" != "1" ]]; then
     failed "01"
 else
     good "01"
@@ -45,34 +50,33 @@ fi
 
 # Check that letter repetitions with at least one in yellow are detected.
 # From the given input file the letter o is detected as repeated
-# appearing at least once in yellow. After this test the word oomph
-# should remain, but not the word vomit.
-LASTWORDSET=`./wordle-helper.sh -binput_test_en_02.txt -n500 | grep "Actual words" | tail -n 1`
-MCOUNT=`echo $LASTWORDSET | grep 'oomph' | grep -v 'vomit' | wc -l`
-if [[ "$MCOUNT" != "1" ]]; then
+# appearing at least once in yellow. After this test the word 'oomph'
+# should remain, but not the word 'vomit'.
+LASTWORDSET=`$RUNWH -binput_test_en_02.txt -n500 | grep "Actual words" | tail -n 1`
+MATCHCOUNT=`echo $LASTWORDSET | grep 'oomph' | grep -v 'vomit' | wc -l`
+if [[ "$MATCHCOUNT" != "1" ]]; then
     failed "02"
 else
     good "02"
 fi
 
-# Check that using this input file which is for spanish, but not using
-# the -s option (so using the default English word list) the actual
-# solution (word 'droga') will not be among the remaining words
-LASTWORDSET=`./wordle-helper.sh -binput_test_es_01.txt | grep "Actual words" | tail -n 1`
-MCOUNT=`echo $LASTWORDSET | grep 'droga' | wc -l`
-if [[ "$MCOUNT" != "0" ]]; then
+# Check that using the -s option and an input file for a spanish wordle,
+# the solution 'droga' should be among the remaining words
+LASTWORDSET=`$RUNWH -s -binput_test_es_01.txt | grep "Actual words" | tail -n 1`
+MATCHCOUNT=`echo $LASTWORDSET | grep "droga" | wc -l`
+if [[ "$MATCHCOUNT" != "1" ]]; then
     failed "03"
 else
     good "03"
 fi
 
-# Similar to the previous test but now using the -s option, so the
-# set of remaining words should have only one word: 'droga'
-LASTWORDSET=`./wordle-helper.sh -s -binput_test_es_01.txt | grep "Actual words" | tail -n 1`
-NWC=`echo $LASTWORDSET | wc -w`
-LSETSIZE=$(( NWC - 3 ))
-MCOUNT=`echo $LASTWORDSET | grep 'droga' | wc -l`
-if [[ "$LSETSIZE" != "1" || "$MCOUNT" != "1" ]]; then
+# Check that the 'ñ' letter is processed normally when using the -s
+# option and an input file for a spanish wordle with only 'señor' as
+# guess, and '--yy-' as clues. The word 'acuño' end up among
+# remaining words, but not 'apiña', 'añade', or 'pañal'
+LASTWORDSET=`$RUNWH -s -binput_test_es_02.txt | grep "Actual words" | tail -n 1`
+MATCHCOUNT=`echo $LASTWORDSET | grep "acuño" | grep -v "apiña" | grep -v "añade" | grep -v "pañal" | wc -l`
+if [[ "$MATCHCOUNT" != "1" ]]; then
     failed "04"
 else
     good "04"
