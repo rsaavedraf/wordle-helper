@@ -1,10 +1,18 @@
 # wordle-helper
-A bash script to help you filter the remaining valid words in Wordle
-challenges, both in English or Spanish.
+Bash and python twin scripts to help you filter the remaining valid words in Wordle
+challenges, both in English or Spanish. Both scripts behave identically: have
+the same options, expect same inputs, and produce same outpus. The python script is
+just quite a bit faster.
 
 Usage:
 
-./wordle-helper.sh [OPTIONS]
+Bash script:
+
+    ./wordle-helper.sh [OPTIONS]
+
+Python script:
+
+    python3 wordle-helper.py [OPTIONS]
 
 Valid options are:
 
