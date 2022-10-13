@@ -281,7 +281,7 @@ while true; do
                 #   SPACER=" "
                 # but we can do a bit more: all words with that letter repeated more than
                 # the nr. of times this letter has been found to be green or yellow
-                # can also be already discarded. Example: guess='litio', clues='---gg'
+                # can also be now discarded. Example: guess='litio', clues='---gg'
                 # Then any words with two or more i's can and should already be
                 # discarded, regardless of the positions of those i's
                 if [[ $REPEATED != *"$LETTER"* ]]; then

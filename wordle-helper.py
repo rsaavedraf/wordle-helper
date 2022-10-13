@@ -230,12 +230,12 @@ def process_attempt(n, word, clues):
                 #       patterns_to_discard.add( anything[0:i] + ltr + anything[i+1:])
                 # but we can do a bit more: all words with that letter repeated more than
                 # the nr. of times this letter has been found to be green or yellow
-                # can also be already discarded. Example: guess='litio', clues='---gg'
+                # can also be now discarded. Example: guess='litio', clues='---gg'
                 # Then any words with two or more i's can and should already be
                 # discarded, regardless of the positions of those i's
                 if ltr not in repeated:
                     repeated.add (ltr)
-                    # rep_attern will have one too many occurrences of the letter.
+                    # rep_pattern will have one too many occurrences of the letter.
                     rep_pattern = ".*" + ltr
                     # Count how many times this letter appears in green or yellow
                     count = 0;
