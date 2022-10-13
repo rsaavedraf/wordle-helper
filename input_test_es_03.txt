@@ -1,0 +1,17 @@
+# Test case created on 13.10.2022, after the Spanish wordle that day:
+# If a letter in green (or yellow) also appears now in black,
+# then any word with one or more too many repetitions of that 
+# letter can already be discarded. Examples:
+# Guess 'impio' resulted in ---gg as clues, so any words that has
+# the letter i repeated (e.g. tibio) could and should be discarded.
+# After that, tried folio, an 'o' was still green but the
+# additional 'o' was black. Same thing here then: any words
+# with a repeated 'o' (e.g. gofio, obvio) should and could also be
+# discarded after these last clues.
+# (Final solution was junio)
+cesar
+-----
+impio
+---gg
+folio
+---gg
