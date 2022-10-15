@@ -43,8 +43,7 @@ function do_Complete_ABC() {
             ABC="$ABC$LETTER"
         done
     done
-    # sort letters in ABC
-    ABC=`echo "$ABC" | grep -o . | sort | tr -d '[:space:]'`
+    ABC=`echo "$ABC" | grep -o . | tr -d '[:space:]'`
 }
 
 # This function returns the 1st invalid letter found in a word
@@ -132,10 +131,11 @@ if [[ "$WLFILE" == "" ]]; then
 fi
 
 # Read word list ignoring comments, making all words lowercase,
-# and keeping only 5 letter words
+# keeping only 5 letter words and sorting using US locale (to match
+# default for python script)
 echo "Loading word list..."
 WORDSET=`cat $WLFILE | grep -v "#" | tr '[:upper:]' '[:lower:]' | tr ' ' '\n'`
-WORDSET=`echo -e "$WORDSET" | grep "^.....$"`
+WORDSET=`echo -e "$WORDSET" | grep "^.....$" | env LC_ALL=en_US sort`
 # Build ABC from the WORDSET
 NWORDS=`echo $WORDSET | wc -w`
 echo "Size of starting word list: $NWORDS"
@@ -314,7 +314,7 @@ while true; do
 
     # Proceed to filter down list of remaining words given the new guess+clues
     if [[ "$LTRS_BLACK" != "" ]]; then
-        MSG="\tDiscarding words with any of [$LTRS_BLACK] in any position."
+        MSG="\tDiscarding words with any of [$LTRS_BLACK] in any position"
         do_filter_down "$MSG" "EXCL" "[$LTRS_BLACK]"
     fi
     if [[ "$PATTERN_TO_MATCH" != "$ANYTHING" ]]; then
@@ -358,7 +358,7 @@ while true; do
             if (( COUNT > 1 )); then
                 REPEATED="$REPEATED$LETTER"  # Track the letter as repeated
                 REP_PATTERN="$REP_PATTERN.*" # Finish the needed pattern
-                echo -e "\tRepetition detected for $LETTER, appearing $COUNT times."
+                echo -e "\tRepetition detected for '$LETTER', appearing $COUNT times."
                 MSG="\tKeeping only words with that repetition (pattern $REP_PATTERN)"
                 do_filter_down "$MSG" "MATCH" "$REP_PATTERN"
             fi

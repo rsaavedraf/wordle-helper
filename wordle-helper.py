@@ -20,7 +20,8 @@ import re
 from pathlib import Path
 
 BAR             = '='*48
-abc             = set(string.ascii_lowercase)
+abc_str         = string.ascii_lowercase
+abc             = set(abc_str)
 black           = "-"
 green           = "g"
 yellow          = "y"
@@ -66,7 +67,7 @@ def process_options(argv):
                 show_max_n=int(n)
             else:
                 print("Invalid max parameter: '{0}'".format(n))
-            print("Using {0} as maximum number of words to display.".format(show_max_n))
+            print("Using {0} as maximum number of words to display".format(show_max_n))
             continue
         if opt.startswith("-b"):
             fname = opt[2:]
@@ -102,6 +103,7 @@ def load_wordlist():
     global wordlist_file
     global word_set
     global abc
+    global abc_str
     global batch_mode
     global wc_msg
     word_set.clear()
@@ -125,10 +127,12 @@ def load_wordlist():
                         word_set.add( word )
                         # Make sure abc has all letters
                         for letter in [*word]:
-                            abc.add(letter)
+                            if not letter in abc:
+                                abc.add(letter)
+                                abc_str = abc_str + letter
     nwords = len(word_set)
     print("Size of starting word list: "+str(nwords))
-    print("ABC has a total of {0} letters: {1}".format(len(abc), ''.join(sorted(abc))))
+    print("ABC has a total of {0} letters: {1}".format(len(abc), abc_str))
 
 def get_word(msg, valid_letters):
     global batch_mode
@@ -188,8 +192,10 @@ def process_attempt(n, word, clues):
     msg_wr="\tWords remaining"
     ltrs_yellow=""
     ltrs_green=""
-    ltrs_ynorep=set()
-    patterns_to_discard=set()
+    #ltrs_ynorep=set()
+    #patterns_to_discard=set()
+    ltrs_ynorep=[]
+    patterns_to_discard=[]
     pattern_to_match=anything
     lw = [*word]  # list of letters in word
     lc = [*clues] # list of letters in clues
@@ -198,9 +204,10 @@ def process_attempt(n, word, clues):
         clue = lc[i]
         if (clue == 'y'):       # Process yellow clue
             ltrs_yellow = ltrs_yellow + ltr
-            ltrs_ynorep.add(ltr)
+            ltrs_ynorep.append(ltr)
             ltrs_ynorep_all.add(ltr)
-            patterns_to_discard.add( anything[0:i] + ltr + anything[i+1:])
+            #patterns_to_discard.add( anything[0:i] + ltr + anything[i+1:])
+            patterns_to_discard.append( anything[0:i] + ltr + anything[i+1:])
         elif (clue == 'g'):     # Process green clue
             ltrs_green = ltrs_green + ltr
             ltrs_gnorep_all.add(ltr)
@@ -217,9 +224,10 @@ def process_attempt(n, word, clues):
     print("\tWords remaining: "+str(nwords))
 
     # Process Blacks
-    ltrs_black=set()
-    repeated = set()
-    ltrs_yg_all=ltrs_ynorep_all.union(ltrs_gnorep_all)
+    str_ltrs_b  = ""
+    ltrs_black  = set()
+    repeated    = set()
+    ltrs_yg_all = ltrs_ynorep_all.union(ltrs_gnorep_all)
     for i in range(5):
         ltr  = lw[i]
         clue = lc[i]
@@ -244,18 +252,20 @@ def process_attempt(n, word, clues):
                             count = count + 1
                             rep_pattern = rep_pattern + ".*" + ltr
                     rep_pattern = rep_pattern + ".*" # Finish the needed pattern
-                    print("\tDetected that letter "+ltr+", appears only "+str(count)+" time(s).")
+                    print("\tDetected that letter '"+ltr+"' appears only "+str(count)+" time(s).")
                     do_filter_down(False, rep_pattern, "\tDiscarding words with too many occurrences of '"+ltr+"' (pattern "+rep_pattern+")")
             else:
                 # Clue is black and letter has never appeared as yellow or green.
-                # Append to list of letters that for sure are not in the solution
-                ltrs_black.add(ltr)
+                if ltr not in ltrs_black:
+                    # Append to list of letters that for sure are not in the solution
+                    str_ltrs_b = str_ltrs_b + ltr
+                    ltrs_black.add(ltr)
 
     # Filter further down list of remaining words given the new guess and clues
     if len(ltrs_black) > 0:
-        bltrs= "[" +"".join(ltrs_black) + "]"
+        bltrs= "[" + str_ltrs_b + "]"
         pattern = ".*" + bltrs + ".*"
-        do_filter_down(False, pattern, "\tDiscarding words with any of "+bltrs+" in any position.")
+        do_filter_down(False, pattern, "\tDiscarding words with any of "+bltrs+" in any position")
 
     if pattern_to_match != anything:
         do_filter_down (True, pattern_to_match, "\tKeeping only words that match the pattern for greens: "+pattern_to_match)
@@ -286,7 +296,7 @@ def process_attempt(n, word, clues):
             if count > 1:
                 repeated.add(ltr)                # Track the letter as repeated
                 rep_pattern = rep_pattern + ".*" # Finish the needed pattern
-                print("\tRepetition detected for "+ltr+", appearing "+str(count)+" times.")
+                print("\tRepetition detected for '"+ltr+"', appearing "+str(count)+" times.")
                 do_filter_down(True, rep_pattern, "\tKeeping only words with that repetition (pattern "+rep_pattern+")")
 
     nwords = len(word_set)
