@@ -18,8 +18,10 @@ Valid options are:
     -bFILE     : batch mode using FILE as input. See an example input file
                  near the end of this help.
 
+    -lN        : work with words that have N letters (default is 5)
+
     -wFILE     : use contents of FILE as the starting Word List
-                 (i.e. for Wordle challenges in other languages.)
+                 (i.e. for Wordle challenges in other languages)
 
 When used without the -b option, this script will interactively ask you to
 provide the guesses you made for a Wordle challenge, as well as the clues

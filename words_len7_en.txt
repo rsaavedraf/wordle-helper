@@ -1,0 +1,27 @@
+# A word list with 7-letter words, to test the script with
+# word lengths different from the default of 5
+#
+# By Raul Saavedra F., 2022/Oct/29, Bonn, Germany
+ability
+backing
+cabinet
+dealing
+eastern
+factory
+gallery
+hanging
+illegal
+jointly
+keeping
+landing
+machine
+natural
+obvious
+pacific
+qualify
+radical
+satisfy
+teacher
+uniform
+variety
+waiting

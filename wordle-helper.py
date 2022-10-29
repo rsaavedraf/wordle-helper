@@ -31,11 +31,12 @@ word_set        = set()
 show_max_n      = 100
 ltrs_ynorep_all = set() # Letters in Yellow from all clues, with no repetitions
 ltrs_gnorep_all = set() # Letters in Green from all clues, with no repetitions
-anything        = "....."
+anything        = "."*5
 batch_mode      = False
 binputs         = []
 binput_index    = 0
 wc_msg          = "Size of starting word list:"
+wlen            = 5
 
 def starting_banner():
     print(BAR)
@@ -48,6 +49,8 @@ def process_options(argv):
     global show_max_n
     global batch_mode
     global binputs
+    global wlen
+    global anything
     for opt in argv:
         if opt == "-h":
             # Display help
@@ -86,12 +89,21 @@ def process_options(argv):
                 print("ERROR: File '"+fname+"' not found, exiting.")
                 sys.exit(-1)
             continue
+        if opt.startswith("-l"):
+            n=opt[2:]
+            if n.isdecimal() and int(n) >= 1:
+                wlen=int(n)
+                anything="."*wlen
+            else:
+                print("Invalid parameter for -l: '{0}'".format(n))
+            print("Using {0} as word-length".format(wlen))
+            continue
         if opt.startswith("-w"):
             fname = opt[2:]
             vpath = Path(fname)
             if vpath.is_file():
                 wordlist_file = fname
-                print("Using '"+wordlist_file+"' as word list.")
+                print("Using '"+wordlist_file+"' as word list")
             else:
                 print("ERROR: Word list file '"+fname+"' not found, exiting")
                 sys.exit(-2)
@@ -106,13 +118,14 @@ def load_wordlist():
     global abc_str
     global batch_mode
     global wc_msg
+    global wlen
     word_set.clear()
     print("Loading word list...")
     if wordlist_file == "":
         # Use the default english word list
         wordlist_file="words_len5_en.txt"
     """
-    Read word list ignoring comments, keeping only 5 letter words,
+    Read word list ignoring comments, keeping only wlen letter words,
     and making all words lowercase, creating a set from the result,
     also updating abc if letters other than those in english appear
     """
@@ -122,7 +135,7 @@ def load_wordlist():
             if not li.startswith("#"):
                 words = li.split()
                 for word in words:
-                    if len(word) == 5:
+                    if len(word) == wlen:
                         word = word.lower()
                         word_set.add( word )
                         # Make sure abc has all letters
@@ -153,8 +166,8 @@ def get_word(msg, valid_letters):
         if (word == ""):
             break
         word = word.strip()
-        if (len(word) != 5):
-            print("ERROR: Input '"+word+"' is not five characters long.")
+        if (len(word) != wlen):
+            print("ERROR: Input '"+word+"' is not {0} characters long.".format(wlen))
             if batch_mode:
                 sys.exit(-4)
             continue
@@ -199,7 +212,7 @@ def process_attempt(n, word, clues):
     pattern_to_match=anything
     lw = [*word]  # list of letters in word
     lc = [*clues] # list of letters in clues
-    for i in range(5):
+    for i in range(wlen):
         ltr  = lw[i]
         clue = lc[i]
         if (clue == 'y'):       # Process yellow clue
@@ -228,7 +241,7 @@ def process_attempt(n, word, clues):
     ltrs_black  = set()
     repeated    = set()
     ltrs_yg_all = ltrs_ynorep_all.union(ltrs_gnorep_all)
-    for i in range(5):
+    for i in range(wlen):
         ltr  = lw[i]
         clue = lc[i]
         if (clue == "-"):       # Process black clue
@@ -318,7 +331,7 @@ def do_helper_loop():
     global abc
     global valid_clues
     msg_eoi="No more inputs, see you next time."
-    msg_enter_guess="\n===== Please enter your 5-letter wordle guess, or Enter to leave:"
+    msg_enter_guess="\n===== Please enter your {0}-letter wordle guess, or Enter to leave:".format(wlen)
     msg_enter_clues="===== Please enter the resulting clues (e.g. -YG--), or Enter to leave:"
     attempt = 0
     while True:

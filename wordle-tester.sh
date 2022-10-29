@@ -124,9 +124,19 @@ function test7() {
     check_test "7" $MATCHCOUNT $2
 }
 
+# Testing usage of the script for word lengths different from 5
+# (options -w and the new one: -l)
+function test8() {
+    OUTPUT=`$1 -binput_test_en_05.txt -wwords_len7_en.txt -l7`
+    LASTWORDSET=`echo -e "$OUTPUT" | grep "Actual words" | tail -n 1`
+    MATCHCOUNT=`echo $LASTWORDSET | grep "illegal" | wc -l`
+    check_test "8" $MATCHCOUNT $2
+}
+
+
 # Do all tests for both scripts
 echo "Testing wordle-helper scripts (.sh and .py):"
-for (( i=1; i<=7; i++)); do
+for (( i=1; i<=8; i++)); do
     TEST="test$i"
     OUTPUT_SH=""
     OUTPUT_PY=""

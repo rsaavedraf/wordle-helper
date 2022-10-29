@@ -17,7 +17,6 @@ echo $BAR
 echo "|     wordle-helper.sh                         |"
 echo "|     By Raul Saavedra F., 2022-Sep-26         |"
 echo $BAR
-ANYTHING="....."
 BLACK="-"
 GREEN="g"
 YELLOW="y"
@@ -27,14 +26,23 @@ BINPUTS=""
 WLFILE=""
 WORDSET=""
 NWORDS=0
+WLEN=5
+ANYTHING="....."
 BATCHMODE=false
 ABC="abcdefghijklmnopqrstuvwxyz"
+
+function rebuild_anything() {
+    ANYTHING=""
+    for (( i=0; i<$(( WLEN )); i++ )); do
+        ANYTHING="$ANYTHING."
+    done
+}
 
 # This function completes the ABC adding any additional letters
 # (e.g. ñ for Spanish) that might appear in the word list to use
 function do_Complete_ABC() {
     for W in $WORDSET; do
-        for (( i=0; i<5; i++ )); do
+        for (( i=0; i<$(( WLEN )); i++ )); do
             LETTER="${W:$i:1}"
             if [[ $ABC == *"$LETTER"* ]]; then
                 continue
@@ -53,7 +61,7 @@ function do_Complete_ABC() {
 function get_Invalid() {
     local i
     local W=$1
-    for (( i=0; i<5; i++ )); do
+    for (( i=0; i<$(( WLEN )); i++ )); do
         local LETTER="${W:$i:1}"
         if [[ "$2" != *"$LETTER"* ]]; then
             # Not a valid letter
@@ -110,10 +118,20 @@ for OPTION in "$@"; do
              fi
              echo "Using $SHOWMAXN as maximum number of words to display"
              ;;
+        -l*) VWLEN="${OPTION:2}"
+             NUMREGEX="^[1-9]+$"
+             if ! [[ $VWLEN =~ $NUMREGEX ]]; then
+                echo "Invalid parameter for -l: '$VWLEN'"
+             else
+                WLEN=$VWLEN
+                rebuild_anything
+             fi
+             echo "Using $WLEN as word-length"
+             ;;
         -w*) WLF="${OPTION:2}"
              if [[ -f $WLF ]]; then
                  WLFILE=$WLF
-                 echo "Using '$WLFILE' as word list."
+                 echo "Using '$WLFILE' as word list"
              else
                  echo "ERROR: Word list file '$WLF' not found, exiting"
                  exit -2
@@ -131,11 +149,12 @@ if [[ "$WLFILE" == "" ]]; then
 fi
 
 # Read word list ignoring comments, making all words lowercase,
-# keeping only 5 letter words and sorting using US locale (to match
-# default for python script)
+# keeping only words with WLEN letters, and sorting using US locale
+# (to match default for python script)
 echo "Loading word list..."
 WORDSET=`cat $WLFILE | grep -v "#" | tr '[:upper:]' '[:lower:]' | tr ' ' '\n'`
-WORDSET=`echo -e "$WORDSET" | grep "^.....$" | env LC_ALL=en_US sort`
+WLMATCH="^$ANYTHING$"
+WORDSET=`echo -e "$WORDSET" | grep "$WLMATCH" | env LC_ALL=en_US sort`
 # Build ABC from the WORDSET
 NWORDS=`echo $WORDSET | wc -w`
 echo "Size of starting word list: $NWORDS"
@@ -160,7 +179,7 @@ while true; do
     else
         # Ask user for next input
         if $GET_GUESS; then
-            echo -e "\n===== Please enter your 5-letter wordle guess, or Enter to leave:"
+            echo -e "\n===== Please enter your $WLEN-letter wordle guess, or Enter to leave:"
         else
             # Ask for the corresponding clues
             echo "===== Please enter the resulting clues (e.g. -YG--), or Enter to leave:"
@@ -177,8 +196,8 @@ while true; do
     fi
 
     # Validate that word has 5 characters
-    if (( ${#WORD} != 5 )); then
-        echo "ERROR: Input '$WORD' is not five characters long."
+    if (( "${#WORD}" != "$WLEN" )); then
+        echo "ERROR: Input '$WORD' is not $WLEN characters long."
         if $BATCHMODE; then
             exit -4
         fi
@@ -223,7 +242,7 @@ while true; do
     PATTERNS_TO_DISCARD=""         # Patterns to discard (from Yellow or Black letters)
     SPACER=""
     # Process Yellows and Greens first
-    for (( i=0; i<5; i++)); do
+    for (( i=0; i<$(( WLEN )); i++)); do
         LETTER="${GUESS:$i:1}"
         CLUE="${CLUES:$i:1}"
         if [[ "$CLUE" == "$YELLOW" ]]; then
@@ -270,7 +289,7 @@ while true; do
     LTRS_BLACK=""  # Collect here Letters in Black
     LTRS_YG_ALL="$LTRS_YNOREP_ALL$LTRS_GNOREP_ALL"
     REPEATED=""
-    for (( i=0; i<5; i++)); do
+    for (( i=0; i<$(( WLEN )); i++)); do
         LETTER="${GUESS:$i:1}"
         CLUE="${CLUES:$i:1}"
         if [[ "$CLUE" == "$BLACK" ]]; then
