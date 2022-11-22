@@ -2574,6 +2574,7 @@ cochi
 cocho
 cocia
 cocio
+cocoa
 cocol
 cocos
 cocui

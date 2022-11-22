@@ -1,8 +1,8 @@
 # wordle-helper
-Bash and python twin scripts to help you filter the remaining valid words in Wordle
-challenges, both in English or Spanish. Both scripts behave identically: have
-the same options, expect same inputs, and produce same outpus. The python script is
-just quite a bit faster.
+Bash and python twin scripts to help you filter the remaining valid words in
+Wordle challenges, both in English or Spanish. Both scripts behave identically:
+have the same options, expect same inputs, and produce same outpus. The python
+script is just quite a bit faster.
 
 Usage:
 
@@ -55,7 +55,8 @@ remaining words (from almost 13000 !) The list of these 22 words is shown,
 and then the script repeats the process asking you again what your next
 guess and clues are, to further reduce this set of possibilities.
 
-The sources of the starting five-letter word lists are the following:
+The sources of the starting five-letter word lists are the following,
+but likely they will get updated here and/or there over time:
 - [English (12972 words)](https://github.com/coolbutuseless/wordle/blob/main/R/words.R)
 - [Spanish (10835 words)](https://www.listasdepalabras.es/palabras5letras.htm)
 
