@@ -1,9 +1,10 @@
 # SPANISH word list for Wordle_helper.sh
-# This list was extracted from https://www.listasdepalabras.es/palabras5letras.htm
-# Originally contained 10836 Spanish words with 5 letters.
-# Might be edited later on.
-# 
-# By Raul Saavedra F., 2022/Sep/26, Bonn, Germany
+# This list initially extracted from:
+# https://www.listasdepalabras.es/palabras5letras.htm
+# 2022/Sep/26, first version with 10836 Spanish words with 5 letters.
+# 2023/Jan/01, relatively important update, adding 300+ words
+#
+# By Raul Saavedra F., Bonn, Germany
 ababa
 abaca
 abaco
@@ -49,7 +50,10 @@ abofe
 abofo
 aboga
 abogo
+abola
+abole
 aboli
+abolo
 abona
 abone
 abono
@@ -118,6 +122,7 @@ acida
 acido
 acije
 acilo
+acima
 acimo
 acion
 acles
@@ -181,6 +186,7 @@ acuta
 acuti
 acuto
 acuyo
+adais
 adala
 adama
 adame
@@ -193,9 +199,12 @@ adiad
 adian
 adiar
 adias
+adido
 adien
 adies
 adios
+adira
+adire
 adiva
 adive
 adoba
@@ -261,6 +270,7 @@ afees
 afiar
 afice
 afija
+afije
 afijo
 afila
 afile
@@ -440,6 +450,7 @@ alana
 alano
 alaui
 alazo
+albal
 albar
 albas
 albea
@@ -629,6 +640,7 @@ amina
 amine
 amino
 amiri
+amish
 amito
 amola
 amole
@@ -798,6 +810,9 @@ aoves
 apaga
 apago
 apale
+apana
+apane
+apano
 apaña
 apañe
 apaño
@@ -1019,6 +1034,7 @@ asaco
 asada
 asado
 asais
+asana
 asara
 asare
 asaro
@@ -1124,6 +1140,7 @@ ateas
 atece
 ateis
 ateje
+atene
 ateos
 ateri
 atesa
@@ -1140,6 +1157,8 @@ atibo
 atica
 atice
 atico
+atijo
+atila
 atina
 atine
 atino
@@ -1283,6 +1302,7 @@ azare
 azaro
 azcon
 azeri
+azima
 azimo
 azoad
 azoan
@@ -1323,6 +1343,7 @@ bable
 babor
 bacan
 bacas
+bacha
 bache
 bacia
 bacin
@@ -1387,6 +1408,7 @@ balso
 balta
 balto
 bamba
+bambi
 bambu
 banal
 banas
@@ -1454,6 +1476,7 @@ bates
 batey
 batia
 batid
+batik
 batin
 batio
 batir
@@ -1484,6 +1507,7 @@ beber
 bebes
 bebia
 bebio
+bebop
 becad
 becan
 becar
@@ -1518,6 +1542,7 @@ bembe
 bembo
 bemol
 benes
+benga
 beoda
 beodo
 beori
@@ -1582,13 +1607,16 @@ bineo
 bines
 bingo
 binza
+bioma
 biota
+biper
 biras
 birla
 birle
 birli
 birlo
 biros
+birra
 bisad
 bisan
 bisar
@@ -1656,6 +1684,8 @@ bogad
 bogan
 bogar
 bogas
+bogey
+bogie
 bogue
 bohio
 boina
@@ -1695,6 +1725,7 @@ bones
 bonga
 bongo
 bonos
+bonus
 bonzo
 boque
 boqui
@@ -1715,6 +1746,7 @@ borro
 borto
 bosar
 boson
+bossa
 bosta
 botad
 botan
@@ -1729,6 +1761,7 @@ botin
 boton
 botor
 botos
+botox
 boxea
 boxee
 boxeo
@@ -1758,6 +1791,7 @@ bravo
 braza
 brazo
 bread
+break
 brean
 brear
 breas
@@ -1768,6 +1802,7 @@ breen
 brees
 brega
 brego
+brent
 breña
 brete
 breva
@@ -1778,6 +1813,8 @@ brial
 briba
 brice
 brida
+bride
+brido
 briol
 brios
 brisa
@@ -1826,6 +1863,7 @@ bucee
 bucen
 buceo
 buces
+bucha
 buche
 bucio
 bucle
@@ -1883,6 +1921,7 @@ burgo
 buril
 burio
 buris
+burka
 burla
 burle
 burlo
@@ -1915,6 +1954,7 @@ cabos
 cabra
 cabre
 cabro
+cabus
 cacan
 cacao
 cacas
@@ -1960,7 +2000,10 @@ caima
 caire
 caite
 cajas
+cajea
+cajee
 cajel
+cajeo
 cajin
 cajis
 cajon
@@ -2004,6 +2047,8 @@ camas
 camba
 cambe
 cambo
+camel
+cameo
 camio
 camon
 campa
@@ -2108,6 +2153,7 @@ carpi
 carpo
 carra
 carro
+carst
 carta
 carvi
 casad
@@ -2115,11 +2161,13 @@ casal
 casan
 casar
 casas
+casba
 casca
 casco
 casea
 casen
 caseo
+caser
 cases
 casia
 casis
@@ -2132,6 +2180,7 @@ catad
 catan
 catar
 catas
+catch
 catea
 catee
 caten
@@ -2369,6 +2418,7 @@ chies
 chifa
 chiis
 chile
+chili
 chima
 chime
 chimo
@@ -2378,6 +2428,7 @@ chine
 chino
 chipa
 chipe
+chipo
 chips
 chira
 chiri
@@ -2397,6 +2448,7 @@ chofe
 chola
 cholo
 chona
+choni
 chono
 chopa
 chope
@@ -2429,6 +2481,7 @@ chuña
 chuño
 chupa
 chupe
+chupi
 chupo
 chura
 churo
@@ -2529,6 +2582,7 @@ clavo
 clema
 clero
 clica
+clico
 clics
 clima
 clips
@@ -2544,8 +2598,11 @@ clora
 clore
 cloro
 clota
+clote
+clown
 clube
 clubs
+coach
 coana
 coati
 cobas
@@ -2584,6 +2641,7 @@ codas
 codea
 codee
 codeo
+codex
 codez
 codin
 codon
@@ -2645,6 +2703,7 @@ coman
 comas
 comba
 combe
+combi
 combo
 comed
 comen
@@ -2654,6 +2713,8 @@ comia
 comic
 comio
 comis
+compa
+compi
 comta
 comto
 comun
@@ -2776,8 +2837,10 @@ coyan
 coyas
 coyes
 coyol
+crack
 cracs
 crasa
+crash
 craso
 craza
 cread
@@ -2795,6 +2858,7 @@ creia
 crema
 creme
 cremo
+crepa
 crepe
 creps
 cresa
@@ -2851,6 +2915,7 @@ cuaja
 cuaje
 cuajo
 cuape
+cuark
 cuasi
 cuata
 cuate
@@ -2908,6 +2973,7 @@ culee
 culen
 culeo
 culia
+culin
 culio
 culis
 culle
@@ -2970,6 +3036,7 @@ curis
 curos
 curra
 curre
+curri
 curro
 curry
 cursa
@@ -3128,6 +3195,7 @@ dente
 dento
 deñar
 depon
+depre
 deque
 derbi
 desca
@@ -3203,6 +3271,7 @@ diñes
 diodo
 diosa
 dioso
+diple
 dique
 diran
 diras
@@ -3221,6 +3290,7 @@ divos
 dobla
 doble
 doblo
+dobro
 docas
 doces
 docil
@@ -3230,6 +3300,7 @@ dodos
 dogal
 dogas
 dogma
+dogon
 dogos
 dogre
 dolad
@@ -3258,6 +3329,7 @@ donde
 donen
 doneo
 dones
+donut
 doñas
 doñea
 doñee
@@ -3309,6 +3381,7 @@ drupa
 drusa
 druso
 dseda
+dseta
 dubas
 dubda
 dubio
@@ -3347,6 +3420,7 @@ dumid
 dumio
 dumir
 dumis
+dunar
 dunas
 dunda
 dundo
@@ -3360,7 +3434,9 @@ duras
 duren
 dures
 duros
+eagle
 ebano
+ebola
 ebria
 ebrio
 echad
@@ -3433,6 +3509,13 @@ eluda
 elude
 eludi
 eludo
+eluia
+eluid
+eluir
+eluis
+eluya
+eluye
+eluyo
 emana
 emane
 emano
@@ -3441,6 +3524,7 @@ emita
 emite
 emiti
 emito
+emoji
 empos
 empra
 empre
@@ -3481,6 +3565,7 @@ enzas
 eolia
 eolio
 eones
+eonia
 epale
 epata
 epate
@@ -3538,6 +3623,7 @@ eruto
 escas
 escay
 escoa
+esmog
 esmui
 esnob
 espay
@@ -3564,6 +3650,7 @@ estro
 esula
 etano
 etapa
+ethos
 etica
 etico
 etilo
@@ -3667,6 +3754,7 @@ famas
 fanal
 fanes
 fango
+fante
 fañad
 fañan
 fañar
@@ -3688,6 +3776,7 @@ farpa
 farra
 farro
 farsa
+farsi
 farte
 fases
 fasol
@@ -3699,6 +3788,7 @@ fatas
 fator
 fatos
 fatua
+fatum
 fatuo
 fauna
 fauno
@@ -3747,6 +3837,7 @@ fermi
 feroz
 ferra
 ferre
+ferri
 ferro
 ferry
 festa
@@ -3779,6 +3870,8 @@ fices
 ficha
 fiche
 ficho
+ficta
+ficto
 ficus
 fideo
 fieis
@@ -3808,6 +3901,7 @@ filar
 filas
 filen
 files
+filet
 filfa
 filia
 filie
@@ -3829,6 +3923,7 @@ finar
 finas
 finca
 finco
+finde
 finen
 fines
 finge
@@ -3853,6 +3948,7 @@ fisan
 fisco
 fisga
 fisgo
+fisio
 fista
 fisto
 fizad
@@ -3882,6 +3978,7 @@ flexo
 flipa
 flipe
 flipo
+flirt
 floja
 flojo
 flora
@@ -4001,6 +4098,8 @@ frica
 frico
 frien
 fries
+frigo
+friki
 frior
 frios
 frisa
@@ -4018,6 +4117,7 @@ fruia
 fruid
 fruir
 fruis
+fruna
 fruta
 frute
 fruto
@@ -4035,6 +4135,7 @@ fuere
 fuero
 fuesa
 fuese
+fuete
 fuets
 fufad
 fufan
@@ -4044,6 +4145,7 @@ fufen
 fufes
 fufos
 fufus
+fugad
 fugan
 fugar
 fugas
@@ -4231,6 +4333,7 @@ gesta
 geste
 gesto
 getas
+geton
 gibad
 giban
 gibao
@@ -4242,6 +4345,7 @@ gibon
 gigas
 gilas
 giles
+giley
 gilis
 gilva
 gilvo
@@ -4260,6 +4364,7 @@ gires
 giros
 gises
 giste
+giton
 glase
 glayo
 gleba
@@ -4273,6 +4378,7 @@ glosa
 glose
 gloso
 gluma
+gluon
 gneis
 gnomo
 goben
@@ -4299,10 +4405,12 @@ golfa
 golfo
 golfs
 golpe
+gomal
 gomar
 gomas
 gomel
 gomer
+gomet
 gomia
 gonce
 gongo
@@ -4501,6 +4609,7 @@ guzgo
 guzla
 habar
 habas
+habed
 haber
 habia
 habil
@@ -4523,12 +4632,15 @@ hacho
 hacia
 hadar
 hadas
+hadiz
 hados
 hafiz
 hagan
 hagas
 haiga
+haiku
 halad
+halal
 halan
 halar
 halas
@@ -4562,6 +4674,7 @@ harre
 harta
 harte
 harto
+hasio
 hasta
 hatea
 hatee
@@ -4575,6 +4688,7 @@ hayan
 hayas
 hayos
 hazas
+heavy
 heben
 hebra
 heces
@@ -4600,6 +4714,7 @@ henar
 hende
 hendi
 henil
+henna
 henos
 henry
 heñia
@@ -4632,6 +4747,8 @@ heteo
 hevea
 hiato
 hicos
+hicsa
+hicso
 hidra
 hieda
 hiede
@@ -4703,6 +4820,7 @@ hiten
 hites
 hiton
 hitos
+hiyab
 hobby
 hobos
 hocen
@@ -4758,6 +4876,7 @@ hospa
 hoste
 hotel
 hotos
+house
 hoves
 hoyad
 hoyan
@@ -4774,6 +4893,8 @@ huaca
 huaco
 huaje
 huaos
+huasa
+huaso
 hucha
 hucho
 hucia
@@ -4872,6 +4993,7 @@ ideay
 ideen
 idees
 ideos
+idish
 idolo
 iglus
 ignea
@@ -4931,11 +5053,14 @@ input
 inris
 insta
 inste
+insti
 insto
 inter
 intis
+intro
 intui
 invar
+inven
 iones
 iotas
 ipsis
@@ -5031,6 +5156,7 @@ jamba
 jambe
 jambo
 jamen
+jameo
 james
 jamon
 janes
@@ -5083,6 +5209,7 @@ jeito
 jejen
 jeliz
 jemal
+jemer
 jemes
 jeque
 jeras
@@ -5181,6 +5308,9 @@ jorga
 jorge
 jorro
 josas
+josea
+josee
+joseo
 jotas
 jotes
 jotos
@@ -5203,10 +5333,12 @@ judos
 juega
 juego
 juera
+juete
 jueza
 jugad
 jugar
 jugas
+jugon
 jugos
 jugue
 jujea
@@ -5218,6 +5350,7 @@ julos
 juman
 jumar
 jumas
+jumbo
 jumea
 jumee
 jumen
@@ -5265,6 +5398,22 @@ jutia
 juvia
 juzga
 juzgo
+kappa
+karma
+karst
+kayak
+kebab
+kefir
+kendo
+kepis
+kilim
+kirie
+koala
+kohol
+koine
+kopek
+kurda
+kurdo
 labeo
 labes
 labia
@@ -5456,6 +5605,7 @@ lelos
 leman
 lemas
 lembo
+lempa
 lempo
 lemur
 lenas
@@ -5499,6 +5649,7 @@ levar
 levas
 leven
 leves
+lexia
 leyes
 lezda
 lezna
@@ -5526,9 +5677,11 @@ libra
 libre
 libro
 liceo
+lichi
 licia
 licio
 licor
+licra
 licua
 licue
 licuo
@@ -5596,7 +5749,11 @@ liras
 liria
 lirio
 liron
+lisad
+lisan
+lisar
 lisas
+lisen
 lises
 lisia
 lisie
@@ -5675,6 +5832,7 @@ locha
 loche
 locos
 locro
+locus
 lodon
 lodos
 lodra
@@ -5740,6 +5898,7 @@ lucid
 lucio
 lucir
 lucis
+lucma
 lucra
 lucre
 lucro
@@ -5814,6 +5973,7 @@ luzco
 lycra
 mabis
 mable
+macad
 macal
 macan
 macar
@@ -5915,6 +6075,7 @@ maneo
 manes
 manga
 mango
+mangu
 mania
 manid
 manio
@@ -5938,6 +6099,7 @@ mapas
 mapea
 mapee
 mapeo
+maple
 mapos
 maque
 maqui
@@ -5966,6 +6128,7 @@ marte
 marza
 marzo
 masad
+masai
 masan
 masar
 masas
@@ -5975,6 +6138,7 @@ masea
 masee
 masen
 maseo
+maser
 mases
 masia
 maslo
@@ -6026,6 +6190,7 @@ meada
 meado
 meais
 meaja
+meana
 meano
 meara
 meare
@@ -6105,6 +6270,7 @@ menti
 mento
 menus
 meona
+mequi
 merad
 meran
 merar
@@ -6151,6 +6317,7 @@ meyas
 meyor
 mezan
 mezas
+mezzo
 miaba
 miado
 miaga
@@ -6247,6 +6414,7 @@ mises
 misia
 misil
 misio
+misis
 misma
 mismo
 mista
@@ -6286,12 +6454,14 @@ modas
 modem
 modio
 modos
+modus
 mofad
 mofan
 mofar
 mofas
 mofen
 mofes
+mofle
 mogas
 mogol
 mogon
@@ -6433,6 +6603,7 @@ muden
 mudes
 mudez
 mudos
+mudra
 mueca
 muela
 muele
@@ -6472,6 +6643,7 @@ muire
 mujan
 mujas
 mujer
+mujik
 mujol
 mular
 mulas
@@ -6525,6 +6697,7 @@ musia
 musio
 musir
 musis
+musli
 muslo
 musos
 mutad
@@ -6596,9 +6769,15 @@ nansu
 nanta
 nante
 nanto
+napad
+napan
+napar
 napas
 napea
+napen
 napeo
+napes
+napia
 naque
 narco
 nardo
@@ -6625,6 +6804,7 @@ navio
 nazca
 nazco
 nazis
+ndowe
 nebel
 nebis
 nebli
@@ -6654,12 +6834,15 @@ nenas
 nenes
 nenia
 nepes
+nerda
+nerdo
 neron
 nesga
 nesgo
 netas
 netos
 neuma
+neura
 nevad
 nevar
 nevas
@@ -6696,6 +6879,7 @@ nimia
 nimio
 ninfa
 ninfo
+ninja
 ninot
 niñas
 niñea
@@ -6706,6 +6890,7 @@ niños
 nioto
 nipas
 nipis
+niple
 nipon
 nipos
 niqui
@@ -6715,12 +6900,15 @@ nitos
 nitra
 nitre
 nitro
+nival
 nivea
 nivel
 niveo
 nixte
+nizam
 nobel
 noble
+nobuk
 nocas
 noche
 nocir
@@ -6844,6 +7032,7 @@ nutro
 ñudos
 ñurda
 ñurdo
+ñusta
 ñutas
 ñutos
 ñuzco
@@ -6862,6 +7051,7 @@ obrar
 obras
 obren
 obres
+obron
 obsta
 obste
 obsto
@@ -6874,6 +7064,7 @@ ocapi
 ocaso
 ocelo
 ocena
+ochio
 ochos
 ociad
 ocian
@@ -6888,7 +7079,9 @@ ocote
 ocras
 ocres
 ocrey
+octal
 ocuje
+oculo
 ocume
 ocumo
 ocupa
@@ -6941,6 +7134,10 @@ ojoso
 ojota
 ojuda
 ojudo
+okapi
+okupa
+okupe
+okupo
 olais
 olaje
 olead
@@ -6953,6 +7150,7 @@ oleis
 oleos
 olera
 olere
+olero
 olian
 olias
 olida
@@ -6964,6 +7162,7 @@ olivo
 ollao
 ollar
 ollas
+ollon
 olmas
 olmos
 olote
@@ -6983,6 +7182,7 @@ omita
 omite
 omiti
 omito
+omota
 omoto
 oncea
 oncee
@@ -6998,11 +7198,17 @@ oneci
 onice
 onoto
 onzas
+opaba
 opaca
 opaco
 opada
 opado
+opais
 opalo
+opara
+opare
+opase
+opeis
 opera
 opere
 opero
@@ -7049,6 +7255,7 @@ orees
 oreis
 oreja
 oreos
+orera
 orero
 orfos
 orfre
@@ -7066,6 +7273,7 @@ orlar
 orlas
 orlen
 orles
+orlon
 orlos
 ornad
 ornan
@@ -7077,6 +7285,7 @@ ornen
 orneo
 ornes
 oroya
+orsay
 ortos
 oruga
 orujo
@@ -7091,6 +7300,7 @@ osais
 osara
 osare
 osase
+oscar
 oscas
 oscos
 osead
@@ -7123,6 +7333,8 @@ oteas
 oteen
 otees
 otero
+otica
+otico
 otila
 otile
 otilo
@@ -7146,6 +7358,7 @@ ovare
 ovase
 oveis
 oveja
+ovejo
 overa
 overo
 ovido
@@ -7190,6 +7403,7 @@ pacta
 pacte
 pacto
 pacus
+padel
 padre
 pafia
 pafio
@@ -7258,11 +7472,13 @@ panco
 panda
 pando
 panel
+paneo
 panes
 panga
 panji
 panos
 pansa
+panti
 panty
 panul
 panza
@@ -7311,10 +7527,12 @@ parid
 pario
 parir
 paris
+parka
 parla
 parle
 parlo
 parne
+paron
 paros
 parpa
 parpe
@@ -7327,6 +7545,7 @@ parta
 parte
 parti
 parto
+party
 parva
 parvo
 pasad
@@ -7481,6 +7700,7 @@ peñas
 peñol
 peñon
 peños
+peona
 peora
 pepas
 pepes
@@ -7523,6 +7743,7 @@ pesol
 pesor
 pesos
 peste
+pesto
 petad
 petan
 petar
@@ -7551,6 +7772,7 @@ piase
 pibas
 pibes
 pibil
+pibon
 picad
 pical
 pican
@@ -7562,7 +7784,9 @@ picha
 piche
 pichi
 picho
+picia
 picon
+picop
 picor
 picos
 picuy
@@ -7591,6 +7815,7 @@ pijos
 pijul
 pijuy
 pilad
+pilaf
 pilan
 pilar
 pilas
@@ -7598,6 +7823,7 @@ pilca
 pilen
 pileo
 piles
+pilin
 pilla
 pille
 pillo
@@ -7608,9 +7834,11 @@ pinal
 pinar
 pinas
 pince
+pindo
 pines
 pinga
 pingo
+pinky
 pinna
 pinol
 pinos
@@ -7652,6 +7880,7 @@ pirca
 pirco
 piren
 pires
+pirex
 pirla
 piron
 piros
@@ -7748,6 +7977,7 @@ pobra
 pobre
 pocas
 pocha
+poche
 pocho
 pocos
 podad
@@ -7764,11 +7994,13 @@ podio
 podon
 podra
 podre
+podri
 poema
 poeta
 poino
 poisa
 poise
+poker
 polar
 polca
 polco
@@ -7780,6 +8012,7 @@ polin
 polio
 polir
 polis
+polka
 polla
 pollo
 polos
@@ -7789,6 +8022,7 @@ pomas
 pomez
 pomos
 pompa
+pompi
 pompo
 ponci
 poned
@@ -7810,6 +8044,7 @@ popen
 popes
 popos
 popti
+porca
 porco
 porga
 porgo
@@ -7831,6 +8066,7 @@ posei
 posen
 poseo
 poses
+posit
 posma
 posmo
 poson
@@ -7862,6 +8098,7 @@ pozas
 pozol
 pozos
 prado
+prana
 praos
 prava
 pravo
@@ -7873,6 +8110,7 @@ preña
 preñe
 preño
 presa
+presi
 preso
 prest
 preve
@@ -7902,9 +8140,11 @@ prona
 prono
 prora
 prosa
+provo
 pruna
 pruno
 psies
+psoas
 puaba
 puada
 puado
@@ -7980,6 +8220,7 @@ punir
 punis
 punja
 punjo
+punki
 punta
 punte
 punto
@@ -8031,6 +8272,7 @@ puyos
 puzle
 puzol
 pymes
+quark
 queco
 queda
 quede
@@ -8175,6 +8417,7 @@ rapan
 rapar
 rapas
 rapaz
+rapel
 rapen
 rapes
 rapos
@@ -8193,8 +8436,11 @@ rasar
 rasas
 rasca
 rasco
+rasea
+rasee
 rasel
 rasen
+raseo
 rases
 rasga
 rasgo
@@ -8203,6 +8449,7 @@ rasos
 raspa
 raspe
 raspo
+rasta
 ratas
 ratea
 ratee
@@ -8267,6 +8514,7 @@ redes
 redil
 redol
 redor
+redox
 redro
 refez
 regad
@@ -8626,6 +8874,7 @@ rotes
 rotor
 rotos
 rouge
+royal
 royan
 royas
 royos
@@ -8754,6 +9003,7 @@ rutar
 rutas
 rutel
 ruten
+ruter
 rutes
 sabea
 sabed
@@ -8847,6 +9097,7 @@ salvo
 saman
 samas
 samba
+sambe
 sambo
 samia
 samio
@@ -8921,6 +9172,7 @@ secar
 secas
 secon
 secos
+secre
 secta
 secua
 sedad
@@ -8946,6 +9198,7 @@ seico
 seise
 sejes
 seles
+selfi
 sella
 selle
 sello
@@ -8962,8 +9215,13 @@ senta
 sente
 senti
 sento
+señad
 señal
+señan
+señar
 señas
+señen
+señes
 señor
 seora
 sepan
@@ -9014,6 +9272,7 @@ sexmo
 sexos
 sexta
 sexto
+shock
 short
 shuar
 sibil
@@ -9024,6 +9283,7 @@ sidra
 siega
 siego
 siena
+siesa
 sieso
 siete
 sifon
@@ -9089,6 +9349,7 @@ siseo
 sises
 sismo
 sison
+sitar
 sitas
 sitia
 sitie
@@ -9102,6 +9363,7 @@ soase
 soaso
 sobad
 soban
+sobao
 sobar
 sobas
 soben
@@ -9134,6 +9396,7 @@ solda
 solde
 soldo
 solea
+soled
 solee
 solen
 soleo
@@ -9211,9 +9474,12 @@ sotol
 sotos
 sovoz
 soyas
+split
 sport
 spray
 stand
+stent
+stock
 suaba
 suabo
 suata
@@ -9259,6 +9525,7 @@ suero
 sueva
 suevo
 sufis
+sufle
 sufra
 sufre
 sufri
@@ -9283,9 +9550,12 @@ sumio
 sumir
 sumis
 sumos
+sumun
 sumus
 sunca
 sunco
+sunna
+sunni
 super
 supla
 suple
@@ -9313,6 +9583,7 @@ surte
 surti
 surto
 suses
+sushi
 susto
 sutas
 sutes
@@ -9320,6 +9591,7 @@ sutil
 suyas
 suyos
 suzon
+swing
 tabal
 tabas
 tabea
@@ -9412,6 +9684,7 @@ tangi
 tango
 tanja
 tanjo
+tanka
 tanor
 tanos
 tanta
@@ -9435,6 +9708,7 @@ tapea
 tapee
 tapen
 tapeo
+taper
 tapes
 tapia
 tapie
@@ -9493,6 +9767,7 @@ taula
 tauro
 taxis
 taxon
+tayin
 tayos
 tayul
 tazad
@@ -9674,6 +9949,7 @@ tinca
 tinco
 tinea
 tineo
+tiner
 tinge
 tinos
 tinta
@@ -9684,6 +9960,10 @@ tiñas
 tiñen
 tiñes
 tipas
+tipea
+tipee
+tipeo
+tipex
 tipis
 tiple
 tipoi
@@ -9806,6 +10086,7 @@ topea
 topee
 topen
 topeo
+toper
 topes
 topia
 topil
@@ -9930,6 +10211,7 @@ trino
 trios
 tripa
 tripe
+tripi
 trisa
 trise
 triso
@@ -9967,6 +10249,7 @@ trusa
 trust
 tuani
 tubas
+tubey
 tubos
 tucan
 tucas
@@ -10020,6 +10303,7 @@ tunta
 tupan
 tupas
 tupen
+tuper
 tupes
 tupia
 tupid
@@ -10060,10 +10344,13 @@ tutes
 tutia
 tutor
 tutos
+tutsi
 tutus
 tuyas
 tuyos
 tuzas
+tweed
+twist
 ubica
 ubico
 ubies
@@ -10130,6 +10417,7 @@ uñada
 uñado
 uñais
 uñate
+uñazo
 uñera
 uñere
 uñero
@@ -10199,7 +10487,10 @@ usgos
 usias
 usier
 usina
+ustea
 usted
+ustee
+usteo
 usual
 usura
 usure
@@ -10281,6 +10572,9 @@ vanea
 vanee
 vaneo
 vanos
+vapea
+vapee
+vapeo
 vapor
 vaque
 varad
@@ -10385,6 +10679,7 @@ verse
 verso
 verte
 verti
+vespa
 veste
 vesti
 vetad
@@ -10411,6 +10706,7 @@ vibre
 vibro
 vicha
 viche
+vichi
 vicho
 vichy
 vicia
@@ -10421,6 +10717,7 @@ victo
 vidas
 video
 vides
+vidia
 vidon
 vidro
 vieja
@@ -10433,6 +10730,7 @@ viese
 vigas
 vigia
 vigie
+vigil
 vigio
 vigor
 viles
@@ -10443,6 +10741,9 @@ vinal
 vinar
 vinca
 vinco
+vinea
+vinee
+vineo
 vinos
 vinta
 viñas
@@ -10515,6 +10816,7 @@ vocee
 voceo
 voces
 vodca
+vodka
 vodus
 voila
 volad
@@ -10525,6 +10827,7 @@ volco
 volea
 volee
 voleo
+voley
 volon
 volts
 volve
@@ -10556,6 +10859,7 @@ vulgo
 vulto
 vulva
 vusco
+weber
 xecas
 xenon
 xinca
@@ -10579,6 +10883,7 @@ yaiti
 yales
 yamao
 yambo
+yambu
 yampa
 yanas
 yanta
@@ -10643,6 +10948,8 @@ yetis
 yeyes
 yeyos
 yezgo
+yidis
+yihad
 yinas
 yines
 yiras
@@ -10743,6 +11050,7 @@ zaque
 zarbo
 zarca
 zarco
+zarda
 zares
 zarja
 zarpa
@@ -10750,6 +11058,7 @@ zarpe
 zarpo
 zarza
 zarzo
+zasca
 zatas
 zayas
 zazas
@@ -10765,6 +11074,7 @@ zenes
 zenit
 zetas
 zincs
+ziper
 zocad
 zocan
 zocar
