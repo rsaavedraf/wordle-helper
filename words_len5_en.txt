@@ -1,7 +1,8 @@
-# ENGLISH word list for Wordle_helper.sh
+# SPDX-License-Identifier: MIT
+# ENGLISH word list for wordle-helper.sh
 # This list was extracted from https://github.com/coolbutuseless/wordle/blob/main/R/words.R
 # Originally contained 12972 English words with 5 letters.
-# Might be edited later on.
+# Might be edited later on over time.
 # 
 # By Raul Saavedra F., 2022/Sep/26, Bonn, Germany
 aahed

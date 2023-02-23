@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: MIT
 # SPANISH word list for Wordle_helper.sh
 # This list initially extracted from:
 # https://www.listasdepalabras.es/palabras5letras.htm
