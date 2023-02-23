@@ -1,16 +1,18 @@
 #!/usr/bin/env python
+# SPDX-License-Identifier: MIT
+
 """
-    wordle-helper.py
-    author: Raul Saavedra ( raul.saavedra@gmail.com )
-    date  : 2022.10.03
+wordle-helper.py
+author: Raul Saavedra ( raul.saavedra@gmail.com )
+date  : 2022.10.03
 
-    This script progressively filters out all words that are
-    no longer valid for a Wordle challenge, given your guesses
-    and clues so far (green, yellow, or black) that you've
-    received for each guess.
+This script progressively filters out all words that are
+no longer valid for a Wordle challenge, given your guesses
+and clues so far (green, yellow, or black) that you've
+received for each guess.
 
-    (This is a just rewrite in python of the original
-    wordle-helper.sh bash script.)
+(This is a just rewrite in python of the original
+wordle-helper.sh bash script.)
 
 """
 

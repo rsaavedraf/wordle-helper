@@ -1,4 +1,6 @@
 #!/bin/bash
+# SPDX-License-Identifier: MIT
+
 # wordle-tester.sh
 # author: Raul Saavedra F. (raul.saavedra@gmail.com)
 # date  : 2022-10-09
@@ -9,7 +11,6 @@
 # Tests identified corner cases for the wordle-helper.
 # It now runs both the bash and python scripts for each test,
 # also making sure their outputs match.
-#
 
 
 RESULT=""

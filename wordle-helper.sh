@@ -1,4 +1,6 @@
 #!/bin/bash
+# SPDX-License-Identifier: MIT
+
 # wordle-helper.sh
 # author: Raul Saavedra F. (raul.saavedra@gmail.com)
 # date  : 2022-09-26
