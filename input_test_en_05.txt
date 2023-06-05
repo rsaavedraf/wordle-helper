@@ -1,8 +1,10 @@
 # A word list with 7-letter words, to test the script with
 # word lengths different from the default of 5
+# Changed first attempt. Previous one (engaged) had incorrect
+# hints.
 #
-# By Raul Saavedra F., 2022/Oct/29, Bonn, Germany
-engaged
-y-yy---
+# By Raul Saavedra F., 2023/Jun/06, Bonn, Germany
+variety
+-y-yy--
 illegal
 ggggggg

@@ -8,10 +8,15 @@
 # Usage:
 #   ./wordle-tester.sh
 #
-# Tests identified corner cases for the wordle-helper.
+# This program tests identified corner cases for the wordle-helper.
 # It now runs both the bash and python scripts for each test,
 # also making sure their outputs match.
-
+#
+# The expectation from each of the tests is to end up with
+# a matchcount of exactly 1. That 1 match applies to the final text line
+# of still possible words returned by the helper given the indicated
+# attempts and hints. So notice it's a match for one final line, not
+# necessarily just one word in that line.
 
 RESULT=""
 
@@ -100,14 +105,17 @@ function test5() {
 # Test case created on 13.10.2022, after the Spanish wordle that day:
 # If a letter in green (or yellow) also appears now in black,
 # then any word with one or more too many repetitions of that
-# letter can already be discarded. Examples:
+# letter can already be discarded. (except if the letter appears
+# again further to the right as yellow or green, see test 9).
+# Examples:
 # Guess 'impio' resulted in ---gg as clues, so any words that has
 # the letter i repeated (e.g. tibio) could and should be discarded.
 # After that, tried folio, an 'o' was still green but the
 # additional 'o' was black. Same thing here then: any words
 # with a repeated 'o' (e.g. gofio, obvio) should and could also be
-# discarded after these last clues.
-# (Final solution was junio)
+# discarded after these last clues. Final solution was junio.
+# Again, see also test9, which is related to a problem likely
+# introduced when coding to pass test6.
 function test6() {
     OUTPUT=`$1 -s -binput_test_es_03.txt`
     LASTWORDSET=`echo -e "$OUTPUT" | grep "Actual words" | tail -n 1`
@@ -134,10 +142,26 @@ function test8() {
     check_test "8" $MATCHCOUNT $2
 }
 
+# Test created on 2023-06-05 from the spanish puzzle of this day.
+# After the following 3 specific attempts:
+# seria / ----g
+# ocupa / ----g
+# alada / y---g
+# The helper runs out of words right there.
+# But gamba, ganga, and other words should still remain given
+# those hints.
+# Seems related to a problem introduced when solving test6.
+function test9() {
+    OUTPUT=`$1 -s -binput_test_es_04.txt`
+    LASTWORDSET=`echo -e "$OUTPUT" | grep "Actual words" | tail -n 1`
+    MATCHCOUNT=`echo $LASTWORDSET | grep "gamba" | wc -l`
+    check_test "9" $MATCHCOUNT $2
+}
+
 
 # Do all tests for both scripts
 echo "Testing wordle-helper scripts (.sh and .py):"
-for (( i=1; i<=8; i++)); do
+for (( i=1; i<=9; i++)); do
     TEST="test$i"
     OUTPUT_SH=""
     OUTPUT_PY=""

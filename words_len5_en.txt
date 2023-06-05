@@ -4339,6 +4339,7 @@ getup
 geums
 geyan
 geyer
+ghana
 ghast
 ghats
 ghaut

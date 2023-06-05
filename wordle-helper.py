@@ -203,12 +203,11 @@ def process_attempt(n, word, clues):
     global ltrs_gnorep_all
     global show_max_n
     global batch_mode
+
     # Process Yellows and Greens first
     msg_wr="\tWords remaining"
     ltrs_yellow=""
     ltrs_green=""
-    #ltrs_ynorep=set()
-    #patterns_to_discard=set()
     ltrs_ynorep=[]
     patterns_to_discard=[]
     pattern_to_match=anything
@@ -221,7 +220,6 @@ def process_attempt(n, word, clues):
             ltrs_yellow = ltrs_yellow + ltr
             ltrs_ynorep.append(ltr)
             ltrs_ynorep_all.add(ltr)
-            #patterns_to_discard.add( anything[0:i] + ltr + anything[i+1:])
             patterns_to_discard.append( anything[0:i] + ltr + anything[i+1:])
         elif (clue == 'g'):     # Process green clue
             ltrs_green = ltrs_green + ltr
@@ -242,7 +240,8 @@ def process_attempt(n, word, clues):
     str_ltrs_b  = ""
     ltrs_black  = set()
     repeated    = set()
-    ltrs_yg_all = ltrs_ynorep_all.union(ltrs_gnorep_all)
+    ltrs_yg_all = list(ltrs_ynorep_all) + list(ltrs_gnorep_all)
+    #print("Letters YG_ALL are:", ltrs_yg_all)
     for i in range(wlen):
         ltr  = lw[i]
         clue = lc[i]
@@ -250,12 +249,13 @@ def process_attempt(n, word, clues):
             if ltr in ltrs_yg_all:
                 # Clue was black, but letter has been seen elsewhere as Y or G.
                 # Before we just discarded words that matched this letter in this position, e.g.
-                #       patterns_to_discard.add( anything[0:i] + ltr + anything[i+1:])
+                #       patterns_to_discard.append( anything[0:i] + ltr + anything[i+1:])
                 # but we can do a bit more: all words with that letter repeated more than
                 # the nr. of times this letter has been found to be green or yellow
                 # can also be now discarded. Example: guess='litio', clues='---gg'
                 # Then any words with two or more i's can and should already be
                 # discarded, regardless of the positions of those i's
+                patterns_to_discard.append( anything[0:i] + ltr + anything[i+1:])
                 if ltr not in repeated:
                     repeated.add (ltr)
                     # rep_pattern will have one too many occurrences of the letter.

@@ -1,0 +1,12 @@
+# Test created on 2023-06-05 from the spanish puzzle of this day.
+# After the following 3 specific attempts the helper runs out of 
+# words right there. But gamba (the actual solution this day,)
+# ganga, magna, tanga, and other words should still remain 
+# given those hints.
+# Seems related to a problem introduced when solving test6.
+seria
+----g
+ocupa
+----g
+alada
+y---g

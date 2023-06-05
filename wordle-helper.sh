@@ -290,6 +290,7 @@ while true; do
     # Process blacks
     LTRS_BLACK=""  # Collect here Letters in Black
     LTRS_YG_ALL="$LTRS_YNOREP_ALL$LTRS_GNOREP_ALL"
+    #echo "Letters YG_ALL are: $LTRS_YG_ALL"
     REPEATED=""
     for (( i=0; i<$(( WLEN )); i++)); do
         LETTER="${GUESS:$i:1}"
@@ -305,6 +306,7 @@ while true; do
                 # can also be now discarded. Example: guess='litio', clues='---gg'
                 # Then any words with two or more i's can and should already be
                 # discarded, regardless of the positions of those i's
+                PATTERNS_TO_DISCARD="$PATTERNS_TO_DISCARD$SPACER${ANYTHING:0:i}$LETTER${ANYTHING:i+1}"
                 if [[ $REPEATED != *"$LETTER"* ]]; then
                     REPEATED="$REPEATED$LETTER"
                     COUNT=0
