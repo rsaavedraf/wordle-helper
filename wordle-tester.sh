@@ -154,7 +154,7 @@ function test8() {
 function test9() {
     OUTPUT=`$1 -s -binput_test_es_04.txt`
     LASTWORDSET=`echo -e "$OUTPUT" | grep "Actual words" | tail -n 1`
-    MATCHCOUNT=`echo $LASTWORDSET | grep "gamba" | wc -l`
+    MATCHCOUNT=`echo $LASTWORDSET | grep -v "ghana" | grep "gamba" | wc -l`
     check_test "9" $MATCHCOUNT $2
 }
 
