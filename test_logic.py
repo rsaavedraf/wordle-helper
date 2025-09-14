@@ -24,10 +24,13 @@ def process_options(argv):
     for opt in argv:
         if opt == "-h":
             # Display help
-            with open('test_logic_help_py.txt') as help:
-                for line in help:
-                    print(line.rstrip())
-            sys.exit()
+            try:
+                with open("test_logic_help_py.txt") as help:
+                    for line in help:
+                        print(line.rstrip())
+            except Exception as e:
+                print("Something went wrong trying to open the script's help file:", e)
+            sys.exit(-10)
         if opt.startswith("-b"):
             # Batch mode
             fname = opt[2:]
@@ -51,10 +54,10 @@ def process_options(argv):
                 batch_mode = True
             else:
                 print("ERROR: File '"+fname+"' not found, exiting.")
-                sys.exit(-1)
+                sys.exit(-20)
             continue
         print("ERROR: {0} is not an option, use -h for usage details".format(opt))
-        sys.exit(-2)
+        sys.exit(-30)
 
 
 def test_wordle_logic_batch():
