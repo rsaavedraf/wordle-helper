@@ -1,0 +1,16 @@
+Using contents of 'test_logic_data.txt' as input file in batch mode:
+aaaaa -----   -a*   	(Result == Expected)
+abcde -----   -a*   -b*   -c*   -d*   -e*   	(Result == Expected)
+abcde -g---   Gb1   -a*   -c*   -d*   -e*   	(Result == Expected)
+xyzpq ggggg   Gx0   Gy1   Gz2   Gp3   Gq4   	(Result == Expected)
+aaaaa --g--   Ga2   -Ra2  	(Result == Expected)
+abcde yyyyy   Ya0   Yb1   Yc2   Yd3   Ye4   	(Result == Expected)
+abcde -gy--   Gb1   Yc2   -a*   -d*   -e*   	(Result == Expected)
+xyaaz --g--   Ga2   -x*   -y*   -Ra2  -z*   	(Result == Expected)
+xyaaz --y--   Ya2   -x*   -y*   -Ra2  -z*   	(Result == Expected)
+paaaq -yg--   Ga2   YRa12 -p*   -Ra3  -q*   	(Result == Expected)
+paaaq -gy--   Ga1   YRa22 -p*   -Ra3  -q*   	(Result == Expected)
+paaaq -gg--   Ga1   Ga2   -p*   -Ra3  -q*   	(Result == Expected)
+pqaaa --yy-   Ya2   YRa32 -p*   -q*   -Ra3  	(Result == Expected)
+litio ---gg   Gi3   Go4   -l*   -Ri2  -t*   	(Result == Expected)
+	All tests passed!

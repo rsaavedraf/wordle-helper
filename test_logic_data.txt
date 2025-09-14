@@ -1,0 +1,28 @@
+# Test cases for test_logic.py
+# This file includes lines with 5-letter words as inputs,
+# some associated wordle clues (g for green, y for yellow, or - for black),
+# and the sequence of expected filtering codes the new processing logic should
+# go through and produce as output.
+# Commented out and blank lines are ignored.
+#
+# By Raul Saavedra, 2025.09.14
+
+aaaaa -----   -a*
+abcde -----   -a*   -b*   -c*   -d*   -e*
+abcde -g---   Gb1   -a*   -c*   -d*   -e*
+
+xyzpq ggggg   Gx0   Gy1   Gz2   Gp3   Gq4
+aaaaa --g--   Ga2   -Ra2
+abcde yyyyy   Ya0   Yb1   Yc2   Yd3   Ye4
+abcde -gy--   Gb1   Yc2   -a*   -d*   -e*
+
+xyaaz --g--   Ga2   -x*   -y*   -Ra2  -z*
+xyaaz --y--   Ya2   -x*   -y*   -Ra2  -z*
+
+paaaq -yg--   Ga2   YRa12 -p*   -Ra3  -q*
+paaaq -gy--   Ga1   YRa22 -p*   -Ra3  -q*
+
+paaaq -gg--   Ga1   Ga2   -p*   -Ra3  -q*
+pqaaa --yy-   Ya2   YRa32 -p*   -q*   -Ra3
+
+litio ---gg   Gi3   Go4   -l*   -Ri2  -t*

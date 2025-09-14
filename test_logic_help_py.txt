@@ -1,0 +1,18 @@
+A python script to test the new processing and filtering logic to be used
+in the python version of wordle-helper.
+
+Usage:
+
+./test_logic.py [OPTIONS]
+
+Valid options are:
+
+    -bFILE     : batch mode using FILE as input.
+
+When used without the -b option, this script will interactively ask you to
+provide the guesses you made for a Wordle challenge, as well as the clues
+you got for each of them. In each step it will indicate what filtering
+options the new processing logic should go through and produce as output.
+
+Details about clue format and the wordle-helper script can be found in the
+wordle helper help file.
