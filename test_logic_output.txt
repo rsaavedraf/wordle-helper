@@ -13,4 +13,5 @@ paaaq -gy--   Ga1   YRa22 -p*   -Ra3  -q*   	(Result == Expected)
 paaaq -gg--   Ga1   Ga2   -p*   -Ra3  -q*   	(Result == Expected)
 pqaaa --yy-   Ya2   YRa32 -p*   -q*   -Ra3  	(Result == Expected)
 litio ---gg   Gi3   Go4   -l*   -Ri2  -t*   	(Result == Expected)
+alada y---g   Ga4   YRa02 -l*   -Ra3  -d*   	(Result == Expected)
 	All tests passed!

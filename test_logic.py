@@ -151,7 +151,7 @@ def test_wordle_logic_batch():
                 if ltr not in toomany:
                     slc = str(lcounters[ltr])
                     result = "-R" + ltr + slc
-                    print(result, end="  ") # Discard excessive reps of ltr (slc is one too many)
+                    print(result, end="  ") # Discard words with ltr in slot si, and also excessive Reps of ltr (slc is one too many)
                     toomany.add(ltr)
             else:
                 # ltr is not at all in the solution
@@ -221,7 +221,7 @@ def test_wordle_logic_interactive():
                 snl = str(lcounters[ltr])
                 print("YR" + ltr + si + snl + ":  Discard words with '" + ltr + "' in slot " + si + ", but Keep only words that contain at least " + snl + " '" + ltr + "'s (Reps detected from y clue!)")
             else:
-                print("Y" + ltr + si +"  :  Discard words with '"+ltr+"' in slot "+si+", but Keep words that have '" + ltr + "' somewhere else.")
+                print("Y" + ltr + si +"  :  Discard words with '" + ltr + "' in slot "+si+", but Keep words that have '" + ltr + "' somewhere else.")
             goodset.add(ltr)
 
         # Pass 3: Process '-' clues (anything not g or y is assumed to mean -)
@@ -234,8 +234,9 @@ def test_wordle_logic_interactive():
                 # this letter had a g or y clue somewhere else
                 if ltr not in toomany:
                     # First time we see it with the - clue from this guess
+                    si = str(i)
                     slc = str(lcounters[ltr])
-                    print("-R" + ltr + slc + " :  Discard excessive Reps of '" + ltr + "' (" + slc + "x is one too many)")
+                    print("-R" + ltr + slc + " :  Discard words with '" + ltr +"' in slot " + si +", and also excessive Reps of '" + ltr + "' (" + slc + "x is one too many)")
                     toomany.add(ltr)
             else:
                 # ltr is not at all in the solution
