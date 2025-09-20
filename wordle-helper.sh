@@ -3,7 +3,9 @@
 
 # wordle-helper.sh
 # author: Raul Saavedra F. (raul.saavedra@gmail.com)
-# date  : 2022-09-26
+# Created : 2022-09-26
+# Last version: 2025-09-17 (Modifications to make it match
+# the logic and the output of the python script)
 #
 # This script progressively filters out all words that are
 # no longer valid for a Wordle challenge, given your guesses
@@ -17,12 +19,9 @@
 BAR="================================================"
 echo $BAR
 echo "|     wordle-helper.sh                         |"
-echo "|     By Raul Saavedra F., 2022-Sep-26         |"
+echo "|     By Raul Saavedra F., 2025-Sep-20         |"
 echo $BAR
-BLACK="-"
-GREEN="g"
-YELLOW="y"
-VALIDCLUES="$BLACK$GREEN$YELLOW"
+VALIDCLUES="gy-"
 SHOWMAXN=100
 BINPUTS=""
 WLFILE=""
@@ -237,39 +236,85 @@ while true; do
     CLUES=$WORD
 
     # Building filtering patterns given the clues for this guess
-    LTRS_YELLOW="" # Collect here letters in Yellow
-    LTRS_YNOREP="" # Same, but with no repetitions
-    LTRS_GREEN=""  # Collect here letters in Green
-    PATTERN_TO_MATCH=$ANYTHING     # Pattern to match (from Green letters)
-    PATTERNS_TO_DISCARD=""         # Patterns to discard (from Yellow or Black letters)
-    SPACER=""
-    # Process Yellows and Greens first
+    PATTERN_TO_MATCH=$ANYTHING   # Pattern to match (from Green letters)
+    PATTERNS_TO_DISCARD=""       # Patterns to discard
+    PATTERNS_TO_KEEP=""          # Patterns to keep
+    GOODSET=""
+    TOOMANY=""
+    SPACER=" "
+    declare -A LCOUNTERS         # <-- An associative array in bash
     for (( i=0; i<$(( WLEN )); i++)); do
-        LETTER="${GUESS:$i:1}"
+        LCOUNTERS["${GUESS:$i:1}"]=0
+    done
+
+    # Pass 1: Process g clues (perfect matches)
+    for (( i=0; i<$(( WLEN )); i++)); do
         CLUE="${CLUES:$i:1}"
-        if [[ "$CLUE" == "$YELLOW" ]]; then
-            # Add this letter in this position to the patterns to discard
-            PATTERNS_TO_DISCARD="$PATTERNS_TO_DISCARD$SPACER${ANYTHING:0:i}$LETTER${ANYTHING:i+1}"
-            SPACER=" "
-            # Update our set of yellow letters from these clues
-            LTRS_YELLOW="$LTRS_YELLOW$LETTER"
-            # Update our set of yellow letters with no repetitions
-            if [[ $LTRS_YNOREP != *"$LETTER"* ]]; then
-                # For this attempt only
-                LTRS_YNOREP="$LTRS_YNOREP$LETTER"
+        if [[ "$CLUE" != "g" ]]; then
+            continue
+        fi
+        LETTER="${GUESS:$i:1}"
+        echo "G${LETTER}${i}  :  Keep only words that contain '$LETTER' in slot $i"
+        PATTERN_TO_MATCH="${PATTERN_TO_MATCH:0:i}$LETTER${PATTERN_TO_MATCH:i+1}"
+        if [[ $GOODSET != *"$LETTER"* ]]; then
+            GOODSET="$GOODSET$LETTER"
+        fi
+        LCOUNTERS["$LETTER"]=$(( LCOUNTERS[$LETTER] + 1 ))
+    done
+
+    # Pass 2: Process y clues
+    for (( i=0; i<$(( WLEN )); i++)); do
+        CLUE="${CLUES:$i:1}"
+        if [[ "$CLUE" != "y" ]]; then
+            continue
+        fi
+        LETTER="${GUESS:$i:1}"
+        LCOUNTERS[$LETTER]=$(( LCOUNTERS[$LETTER] + 1 ))
+        if [[ $GOODSET == *"$LETTER"* ]]; then
+            LC=$(( LCOUNTERS[$LETTER] ))
+            echo "YR${LETTER}${i}${LC}:  Discard words with '$LETTER' in slot $i, and Keep only words that contain at least ${LC} '$LETTER's (Reps detected from y clue!)"
+        else
+            LC=1
+            GOODSET="$GOODSET$LETTER"
+            echo "Y${LETTER}${i}  :  Discard words with '$LETTER' in slot $i, and Keep only words that have '$LETTER' somewhere else."
+        fi
+        PATTERNS_TO_DISCARD="$PATTERNS_TO_DISCARD$SPACER${ANYTHING:0:i}$LETTER${ANYTHING:i+1}"
+        CHUNK=".*$LETTER"
+        PATTERN="$CHUNK"
+        for (( k=1; k<$(( LC )); k++)); do
+            PATTERN="$PATTERN$CHUNK"
+        done
+        PATTERNS_TO_KEEP="$PATTERNS_TO_KEEP$SPACER$PATTERN.*"
+    done
+
+    # Pass 3: Process - clues
+    for (( i=0; i<$(( WLEN )); i++)); do
+        CLUE="${CLUES:$i:1}"
+        if [[ "$CLUE" != "-" ]]; then
+            continue
+        fi
+        LETTER="${GUESS:$i:1}"
+        LCOUNTERS[$LETTER]=$(( LCOUNTERS[$LETTER] + 1 ))
+        if [[ $GOODSET == *"$LETTER"* ]]; then
+            # this letter had a g or y clue somewhere else
+            if [[ $TOOMANY != *"$LETTER"* ]]; then
+                LC=$(( LCOUNTERS[$LETTER] ))
+                # First time we see it with the - clue from this guess
+                echo "-R${LETTER}${LC} :  Discard words with '$LETTER' in slot $i, and also excessive Reps of '$LETTER' (${LC}x is one too many)"
+                PATTERNS_TO_DISCARD="$PATTERNS_TO_DISCARD$SPACER${ANYTHING:0:i}$LETTER${ANYTHING:i+1}"
+                CHUNK=".*$LETTER"
+                PATTERN="$CHUNK"
+                for (( k=1; k<$(( LC )); k++)); do
+                    PATTERN="$PATTERN$CHUNK"
+                done
+                PATTERNS_TO_DISCARD="$PATTERNS_TO_DISCARD$SPACER$PATTERN.*"
             fi
-            if [[ $LTRS_YNOREP_ALL != *"$LETTER"* ]]; then
-                # For all attempts
-                LTRS_YNOREP_ALL="$LTRS_YNOREP_ALL$LETTER"
-            fi
-        elif [[ "$CLUE" == "$GREEN" ]]; then
-            # Add this letter in this position to the pattern to match
-            PATTERN_TO_MATCH="${PATTERN_TO_MATCH:0:i}$LETTER${PATTERN_TO_MATCH:i+1}"
-            # Update our set of green letters from these clues
-            LTRS_GREEN="$LTRS_GREEN$LETTER"
-            # Update our set of green letters from all clues, with no repetitions
-            if [[ $LTRS_GNOREP_ALL != *"$LETTER"* ]]; then
-                LTRS_GNOREP_ALL="$LTRS_GNOREP_ALL$LETTER"
+        else
+            # letter is not at all in the solution
+            if (( LCOUNTERS[$LETTER] == 1 )); then
+                # First time we see this letter in the guess, so do filter it out
+                echo "-$LETTER*  :  Discard any words that contain '$LETTER' anywhere."
+                PATTERNS_TO_DISCARD="$PATTERNS_TO_DISCARD$SPACER.*$LETTER.*"
             fi
         fi
     done
@@ -287,104 +332,26 @@ while true; do
     NWORDS=`echo $WORDSET | wc -w`
     echo -e "\tWords remaining: $NWORDS"
 
-    # Process blacks
-    LTRS_BLACK=""  # Collect here Letters in Black
-    LTRS_YG_ALL="$LTRS_YNOREP_ALL$LTRS_GNOREP_ALL"
-    #echo "Letters YG_ALL are: $LTRS_YG_ALL"
-    REPEATED=""
-    for (( i=0; i<$(( WLEN )); i++)); do
-        LETTER="${GUESS:$i:1}"
-        CLUE="${CLUES:$i:1}"
-        if [[ "$CLUE" == "$BLACK" ]]; then
-            if [[ $LTRS_YG_ALL == *"$LETTER"* ]]; then
-                # Clue was black, but letter has been seen elsewhere as Y or G.
-                # Before we just discarded words that matched this letter in this position, e.g.
-                #   PATTERNS_TO_DISCARD="$PATTERNS_TO_DISCARD$SPACER${ANYTHING:0:i}$LETTER${ANYTHING:i+1}"
-                #   SPACER=" "
-                # but we can do a bit more: all words with that letter repeated more than
-                # the nr. of times this letter has been found to be green or yellow
-                # can also be now discarded. Example: guess='litio', clues='---gg'
-                # Then any words with two or more i's can and should already be
-                # discarded, regardless of the positions of those i's
-                PATTERNS_TO_DISCARD="$PATTERNS_TO_DISCARD$SPACER${ANYTHING:0:i}$LETTER${ANYTHING:i+1}"
-                if [[ $REPEATED != *"$LETTER"* ]]; then
-                    REPEATED="$REPEATED$LETTER"
-                    COUNT=0
-                    LEN_YG_ALL=${#LTRS_YG_ALL}
-                    REP_PATTERN=".*$LETTER"
-                    for (( j=0; j<$LEN_YG_ALL; j++ )); do
-                        LETTER2="${LTRS_YG_ALL:$j:1}"
-                        if [[ "$LETTER2" == "$LETTER" ]]; then
-                            COUNT=$((COUNT + 1))
-                            REP_PATTERN="$REP_PATTERN.*$LETTER"
-                        fi
-                    done
-                    REP_PATTERN="$REP_PATTERN.*" # Finish the needed pattern
-                    echo -e "\tDetected that letter '$LETTER' appears only $COUNT time(s)."
-                    MSG="\tDiscarding words with too many occurrences of '$LETTER' (pattern $REP_PATTERN)"
-                    do_filter_down "$MSG" "EXCL" "$REP_PATTERN"
-                fi
-            else
-                # Clue is black and letter has never appeared as yellow or green
-                # Append to list of letters that for sure are not in the solution,
-                # if not there already
-                if [[ $LTRS_BLACK != *"$LETTER"* ]]; then
-                    LTRS_BLACK="$LTRS_BLACK$LETTER"
-                fi
-            fi
-        fi
-    done
-
-    # Proceed to filter down list of remaining words given the new guess+clues
-    if [[ "$LTRS_BLACK" != "" ]]; then
-        MSG="\tDiscarding words with any of [$LTRS_BLACK] in any position"
-        do_filter_down "$MSG" "EXCL" "[$LTRS_BLACK]"
-    fi
+    # Filter further down list of remaining words given the new guess and clues
     if [[ "$PATTERN_TO_MATCH" != "$ANYTHING" ]]; then
-        MSG="\tKeeping only words that match the pattern for greens: $PATTERN_TO_MATCH"
+        MSG="\tKeeping only words matching: $PATTERN_TO_MATCH"
         do_filter_down "$MSG" "MATCH" "$PATTERN_TO_MATCH"
     fi
     for PATTERN in $PATTERNS_TO_DISCARD; do
-        MSG="\tDiscarding pattern '$PATTERN'"
+        MSG="\tDiscarding words matching:   '$PATTERN'"
         do_filter_down "$MSG" "EXCL" "$PATTERN"
     done
+    for PATTERN in $PATTERNS_TO_KEEP; do
+        MSG="\tKeeping words matching:      '$PATTERN'"
+        do_filter_down "$MSG" "MATCH" "$PATTERN"
+    done
+
     LEN_YNR=${#LTRS_YNOREP}
     for (( i=0; i<$LEN_YNR; i++)); do
         LETTER="${LTRS_YNOREP:$i:1}"
         if [[ $LTRS_GNOREP_ALL != *"$LETTER"* ]]; then
             MSG="\tKeeping only words with '$LETTER' somewhere"
             do_filter_down "$MSG" "MATCH" "$LETTER"
-        fi
-    done
-
-    # If there is a yellow letter repeated, or a yellow letters which also
-    # appears in green, then count how many times this letter appears, in order
-    # to keep only words with at least that many occurences of this letter
-    LTRS_YG="$LTRS_YELLOW$LTRS_GREEN"
-    LEN_YG=${#LTRS_YG}
-    REPEATED="" # Collect here letters that we find repeated in LTRS_YG
-    for (( i=0; i<$LEN_YG; i++)); do
-        LETTER="${LTRS_YG:$i:1}"
-        if [[ $REPEATED != *"$LETTER"* ]]; then
-            # Not marked as repeated yet, so check if it is repeated
-            COUNT=1
-            REP_PATTERN=".*$LETTER"
-            for (( ((j=i+1)); j<$LEN_YG; j++ )); do
-                LETTER2="${LTRS_YG:$j:1}"
-                if [[ "$LETTER2" == "$LETTER" ]]; then
-                    # It is repeated, count the repetitions
-                    COUNT=$((COUNT + 1))
-                    # Update the needed pattern
-                    REP_PATTERN="$REP_PATTERN.*$LETTER"
-                fi
-            done
-            if (( COUNT > 1 )); then
-                REPEATED="$REPEATED$LETTER"  # Track the letter as repeated
-                REP_PATTERN="$REP_PATTERN.*" # Finish the needed pattern
-                echo -e "\tRepetition detected for '$LETTER', appearing $COUNT times."
-                MSG="\tKeeping only words with that repetition (pattern $REP_PATTERN)"
-                do_filter_down "$MSG" "MATCH" "$REP_PATTERN"
-            fi
         fi
     done
 
@@ -405,5 +372,7 @@ while true; do
         echo "Bye for now."
         exit 0
     fi
+
     GET_GUESS=true # Ask for the next guess
+
 done

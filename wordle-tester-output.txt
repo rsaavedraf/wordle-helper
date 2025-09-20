@@ -1,0 +1,28 @@
+Testing wordle-helper scripts (.sh and .py):
+Test 1: sh script succeeded
+Test 1: py script succeeded
+Their outputs match
+Test 2: sh script succeeded
+Test 2: py script succeeded
+Their outputs match
+Test 3: sh script succeeded
+Test 3: py script succeeded
+Their outputs match
+Test 4: sh script succeeded
+Test 4: py script succeeded
+Their outputs match
+Test 5: sh script succeeded
+Test 5: py script succeeded
+Their outputs match
+Test 6: sh script succeeded
+Test 6: py script succeeded
+Their outputs match
+Test 7: sh script succeeded
+Test 7: py script succeeded
+Their outputs match
+Test 8: sh script succeeded
+Test 8: py script succeeded
+Their outputs match
+Test 9: sh script succeeded
+Test 9: py script succeeded
+Their outputs match
