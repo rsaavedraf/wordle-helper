@@ -242,17 +242,17 @@ def process_attempt(n, guess, clues):
         if (ltr in goodset):
             lc = lcounters[ltr]
             slc = str(lc)
-            print("YR" + ltr + si + slc + ":  Discard words with '" + ltr + "' in slot " + si + ", but Keep only words that contain at least " + slc + " '" + ltr + "'s (Reps detected from y clue!)")
+            print("YR" + ltr + si + slc + ":  Discard words with '" + ltr + "' in slot " + si + ", and Keep only words that contain at least " + slc + " '" + ltr + "'s (Reps detected from y clue!)")
         else:
             lc = 1
-            print("Y" + ltr + si +"  :  Discard words with '"+ltr+"' in slot "+si+", but Keep words that have '" + ltr + "' somewhere else.")
+            print("Y" + ltr + si +"  :  Discard words with '"+ltr+"' in slot "+si+", and Keep only words that have '" + ltr + "' somewhere else.")
         patterns_to_discard.append( anything[0:i] + ltr + anything[i+1:] )
         patterns_to_keep.append( ((".*" + ltr)*lc) + ".*" )
         goodset.add(ltr)
 
-    # Pass 3: Process '-' clues (anything not g or y is assumed to be a - clue)
+    # Pass 3: Process '-' clues
     for i in range(wlen):
-        if clues[i] in "gy":
+        if (clues[i] != "-"):
             continue
         ltr = guess[i]
         lcounters[ltr] += 1
@@ -271,7 +271,7 @@ def process_attempt(n, guess, clues):
             # ltr is not at all in the solution
             if (lcounters[ltr] == 1):
                 # First time we see this letter in the guess, so do filter it out
-                print("-" + ltr + "*  :  Discard any words that contain '" + ltr + "' anywhere")
+                print("-" + ltr + "*  :  Discard any words that contain '" + ltr + "' anywhere.")
                 patterns_to_discard.append( ".*" + ltr + ".*")
 
     # Details of current guess and corresponding clues
@@ -314,7 +314,7 @@ def do_helper_loop():
     global valid_clues
     msg_eoi="No more inputs, see you next time."
     msg_enter_guess="\n===== Please enter your {0}-letter wordle guess, or Enter to leave:".format(wlen)
-    msg_enter_clues="===== Please enter the resulting clues (e.g. -YG--), or Enter to leave:"
+    msg_enter_clues="===== Please enter the resulting clues (e.g. -yg--), or Enter to leave:"
     attempt = 0
     while True:
         word = get_word(msg_enter_guess, abc)
